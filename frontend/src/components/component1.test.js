@@ -1,0 +1,1 @@
+// test for componenent.js should be written here
