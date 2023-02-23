@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
+import "../styles.css";
 
 
 function HomePage() {
