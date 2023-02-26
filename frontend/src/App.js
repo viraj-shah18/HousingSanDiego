@@ -24,6 +24,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+
+
 const pages = [{
   name: 'Home',
   path: '/',
