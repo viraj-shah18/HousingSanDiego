@@ -40,12 +40,13 @@ const pages = [{
   path: '/',
 }
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Logout'];
 
 
-function App() {
+function App(props) {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [isLogin, setIsLogin] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [curPage,setCurPage] = React.useState('Home');
 
