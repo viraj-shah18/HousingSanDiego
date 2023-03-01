@@ -1,18 +1,7 @@
 //This page is for searching
 import * as React from 'react';
 import SearchBar from './searchBar';
-import { Tile } from 'react-native-elements';
 
-function TileComp(){
-    return (
-        <Tile
-        // imageSrc={require('./img/path')}
-        title="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores dolore exercitationem"
-        featured
-        caption="Some Caption Text"
-        />
-    )
-}
 
 function SearchPage() {
 

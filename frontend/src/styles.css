@@ -1,7 +1,7 @@
 .main {
     display: flex;
     height: 100vh;
-    width: 348px;
+    width: 100%;
     align-items: center;
     flex-direction: column;
     row-gap: 20px;
@@ -24,3 +24,41 @@
     opacity: 0.75;
 
   }
+
+.left-pane-search {
+    /* display: flex; */
+    /* height: 100vh; */
+    width: 50%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 5px;
+    color: gray; 
+    border-style: groove;     
+  }
+
+.card {
+    /* display: flex;
+    height: 100vh;
+    width: 50%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 20px;
+    color: white;  */
+    width: 100%;
+    border-style: groove;     
+  }
+
+.right-pane-search {
+    display: flex;
+    height: 100vh;
+    width: 50%;
+    align-items: right;
+    flex-direction: column;
+    row-gap: 20px;
+    color: white;
+    border-style: groove;      
+  }
+
+.row{
+  display: flex;
+}

@@ -4,6 +4,7 @@ import CollectionPage from './components/collectionList';
 import ProfilePage from './components/profilePage';
 import SearchPage from './components/searchPage';
 import FindRoommate from './components/findRoommate';
+import Cards from  './components/flatCardsWindow';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -218,6 +219,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/find-roommate" element={<FindRoommate />} />   
+          <Route path="/cards" element={<Cards />} />   
       </Routes>
     </div>
   );
