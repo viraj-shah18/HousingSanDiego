@@ -9,6 +9,7 @@ import {
 
 
 export default function CardItem({title, short_desc, btn_txt, img }) {
+    // Single card component, img is imported as 'import house2 from "../imgs/nuevo-east.jpg";' 
     return (      
       <MDBCard className='card'>
         <MDBCardImage className="cardimg" src={img} position='top' alt='...' />

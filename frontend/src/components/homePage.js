@@ -1,7 +1,6 @@
 //This file is for homepage (both login and logout)
 import * as React from 'react';
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
 import "../styles.css";
 import background from "../imgs/home.jpg";
 import {useNavigate} from 'react-router-dom';
@@ -13,23 +12,6 @@ function HomePage() {
         <Search />
     );
 }
-
-
-// function SearchBar({keyPress}){
-//   return  (      
-//   <div className="search">
-//   <TextField
-//     id="outlined-basic"
-//     variant="outlined"
-//     fullWidth
-//     label="Search"
-
-//     // onKeyDown={() => keyPress()}
-//     onKeyDown={keyPress}
-//   />
-// </div> )
-
-// }
 
 
 function Search({ details }) {
@@ -50,16 +32,6 @@ function Search({ details }) {
       <div className="main" style={{ backgroundImage: `url(${background})` }}>
       <h1>Abode Genius</h1>
       <SearchBar keyPress={keyPress}/>
-      {/* <div className="search">
-        <TextField
-          id="outlined-basic"
-          variant="outlined"
-          fullWidth
-          label="Search"
-
-          onKeyDown={keyPress}
-        />
-      </div> */}
     </div>
     
     );
