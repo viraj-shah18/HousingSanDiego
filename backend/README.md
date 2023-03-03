@@ -4,7 +4,7 @@
 - Be in the top-level directory and run ```pip install -r requirements.txt```.
 - ```cd backend``` 
 - Run the command ```python manage.py runserver``` to run your local server.
-- Navigate to http://localhost:8000/api/[rest of the url here]
+- Navigate to ```http://localhost:8000/api/[rest of the url here]```
 
 If changes were made to the server (for example, edits to ```models.py``` or ```settings.py```)
 run these two commands before running the runserver command:
