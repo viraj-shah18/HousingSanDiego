@@ -21,7 +21,7 @@ MongoDB account so I can add you to the project for live GUI access via the Mong
 Otherwise, the database is already connected to the Django app via the ```settings.py```. Any requests made
 to a live server will have access to the remote database.
 
-To give a servr running on your machine access to the MongoDB Atlas cloud instance:
+To give a server running on your machine access to the MongoDB Atlas cloud instance:
 - Navigate to ```.venv/lib/pymongo/mongo_client.py```
 - Edit the line of code from:
 ```
