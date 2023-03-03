@@ -28,15 +28,31 @@
 .left-pane-search {
     /* display: flex; */
     /* height: 100vh; */
+    /* width: 100%; */
+    flex-direction: column;
+    row-gap: 10px;
+    color: gray; 
+    border-style: groove;     
+    height: 100vh;
+    overflow-y: scroll;
+  }
+
+  .card {
+    /* display: flex;
+    height: 100vh;
     width: 50%;
     align-items: left;
     flex-direction: column;
-    row-gap: 5px;
-    color: gray; 
-    border-style: groove;     
+    row-gap: 20px;
+    color: white;  */
+    align-items: right;
+    width: 80%;
+    border-style: groove; 
+    margin-left: auto; 
+    margin-right: 0;  
+    margin-bottom: 2%;
   }
-
-.card {
+  .cardimg {
     /* display: flex;
     height: 100vh;
     width: 50%;

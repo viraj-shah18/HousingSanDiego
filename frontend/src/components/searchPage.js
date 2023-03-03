@@ -1,6 +1,7 @@
 //This page is for searching
 import * as React from 'react';
 import SearchBar from './searchBar';
+import Cards from './flatCardsWindow'
 
 
 function SearchPage() {
@@ -15,8 +16,10 @@ function SearchPage() {
       }    
     return (
         <div className="searchbar-searchpage" >
-        <SearchBar keyPress={keyPress}/>
+          <SearchBar keyPress={keyPress}/>
+          <Cards />
          </div>
+         
 
     );
 }

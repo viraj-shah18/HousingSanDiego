@@ -5,7 +5,6 @@ import "../styles.css";
 
 
 
-
 function SearchBar({keyPress}){
   return  (      
   <div className="search">
