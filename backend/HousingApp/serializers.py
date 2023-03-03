@@ -16,16 +16,11 @@ from .models import *
 #         fields = '__all__'
 #         abstract = True
 class UserSerializer(serializers.ModelSerializer):
-    # specify model and fields
     class Meta:
         model = User
         #social_info = SocialInfoSerializer(many=True)
         #fields = '__all__'
         fields = ('_id', 'display_name', 'is_profile_displayed', 'profile_info', 'social_info') # 'friends', 'collections')
-
-
-
-
 
 class PropertySerializer(serializers.ModelSerializer):
     class Meta:

@@ -10,8 +10,8 @@ from rest_framework.decorators import api_view
 from rest_framework import viewsets
   
 # import local data
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Property
+from .serializers import UserSerializer, PropertySerializer
 from .models import *
 
 import json
@@ -42,16 +42,15 @@ def user_list(request):
 
         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# /api/user/id
+# api/user/<str:id>
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_detail(request, id):
-    print("bruh")
     # find user by id
     try: 
         user = User.objects.get(pk=ObjectId(id)) 
     except User.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-        
+
     if request.method == 'GET': # TESTED
         user_serializer = UserSerializer(user) 
         return JsonResponse(user_serializer.data) 
@@ -71,6 +70,32 @@ def user_detail(request, id):
         return JsonResponse({'message': 'User was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 
+# api/property/id/<str:id>
+@api_view(['GET'])
+def property_detail(request, id):
+    # find property by id
+    try: 
+        property_obj = Property.objects.get(pk=ObjectId(id)) 
+    except Property.DoesNotExist: 
+        return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+    if request.method == 'GET': # NOT TESTED
+        property_serializer = PropertySerializer(property_obj) 
+        return JsonResponse(property_serializer.data) 
+
+# api/property/search/<str:search_query>
+@api_view(['GET'])
+def propproperty_search(request, search_query):
+    # find closest properties (in sorted order) by search_query str
+    try: 
+        property_obj = Property.objects.get(pk=ObjectId(id)) 
+    except Property.DoesNotExist: 
+        return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+    if request.method == 'GET': # NOT TESTED
+        property_serializer = PropertySerializer(property_obj) 
+        return JsonResponse(property_serializer.data) 
+
 
 
 
@@ -82,8 +107,6 @@ def user_detail(request, id):
       
 #     # specify serializer to be used
 #     serializer_class = UserSerializer
-
-
 
 
 # https://pypi.org/project/geopy/ geolocator

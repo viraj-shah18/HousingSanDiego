@@ -17,7 +17,7 @@ urlpatterns = [
     # path('', include(router.urls)),
     path(r'api/user/<str:id>', views.user_detail),
     path(r'api/user', views.user_list),
+    url(r'^api/property/id/<str:id>', views.property_detail),  
+    url(r'^api/property/search/<str:search_query>', views.property_search)
     # url(r'^api/property$', views.property_list),    
-    # url(r'^api/property/id/(?P<pk>[0-9]+)$', views.property_detail),  
-    # url(r'^api/property/search/<str:search_query>', views.property_search),    
 ]
