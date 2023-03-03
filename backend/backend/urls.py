@@ -20,5 +20,5 @@ from django.urls import include, path
 # specify URL Path for rest_framework
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('HousingApp.urls'))
+    path('', include('HousingApp.urls')) # include urls from HousingApp/
 ]

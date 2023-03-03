@@ -6,6 +6,9 @@ from django.db.models import ImageField
 # from djangotoolbox.fields import DictField, EmbeddedField
 # from enum import Enum
 
+IS_MIGRATE = True       # Only set this to False when NOT running makemigrate
+                        # Djongo work around, should otherwise ALWAYS be True
+
 # Sub-models =======================================
 class Profile_Info(models.Model):
 	# intro, major/college/year, clubs/extracurriculars, hobbies, living preferences, anything else?
@@ -15,7 +18,7 @@ class Profile_Info(models.Model):
 	prefs: str = models.CharField(max_length=280, blank=True, null=True)
 	more: str = models.CharField(max_length=120, blank=True, null=True)
 	class Meta:
-		abstract = True  # Set abstract=True to prevent this model from being created as a separate collection in MongoDB.
+		abstract = IS_MIGRATE  # Set abstract=True to prevent this model from being created as a separate collection in MongoDB.
 
 
 class Social_Info(models.Model):
@@ -25,7 +28,7 @@ class Social_Info(models.Model):
 	whatsapp: int = models.PositiveIntegerField(max_length=12, blank=True, null=True)
 
 	class Meta:
-		abstract = True
+		abstract = IS_MIGRATE
 
 # class FRIEND_ENUM(Enum):
 # 	REQUESTED = 0
@@ -76,18 +79,7 @@ class Collection(models.Model):
 	name: str = models.CharField(max_length=32)
 	desc: str = models.CharField(max_length=120, blank=True, null=True)
 	properties_list = models.EmbeddedField(model_container=Collection_Object, blank=True, null=True)
-
-# 	"profile_info": null
-request = client.post('/api/user', {
-	"_id": "13ffd299b2d6a0131f530819",
-	"display_name": "Micheal",
-	"is_profile_displayed": True,
-
-	"social_info": {
-		"phone": "8581234567"
-	}
-}) 
-
+	
 class User(models.Model):
 	_id: str = models.ObjectIdField(primary_key=True)
 	display_name: str = models.CharField(max_length=32)
@@ -118,10 +110,11 @@ class Property(models.Model):
 	num_bedrooms: int = models.PositiveIntegerField()
 	num_bathrooms: int = models.PositiveIntegerField()
 
-	# https://medium.com/@tech-learner/upload-images-in-database-using-django-dc652941122b
 	desc: str = models.CharField(max_length=1000)
-	#images = models.ArrayField(ImageField(upload_to='images/', default=None))
 	contact_info = models.EmbeddedField(model_container=Social_Info)
+	# https://medium.com/@tech-learner/upload-images-in-database-using-django-dc652941122b
+	#images = models.ArrayField(ImageField(upload_to='images/', default=None))
+	
 	
 
 
