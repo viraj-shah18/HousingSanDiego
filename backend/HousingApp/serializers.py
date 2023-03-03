@@ -10,11 +10,6 @@ from .models import *
 #         model = Social_Info
 #         fields = '__all__'
 #         abstract = True
-# class ProfileInfoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Profile_Info
-#         fields = '__all__'
-#         abstract = True
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

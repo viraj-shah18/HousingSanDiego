@@ -75,32 +75,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'djongo',
-    #     'NAME': 'abode_db',
-    #     'ENFORCE_SCHEMA': False,
-    #     'CLIENT': {
-    #         'host': 'cluster0.pjbn6j9.mongodb.net',
-    #         'username': 'abodegenius',
-    #         'password': 'sHnSgURodYwUws3U',
-    #         'authSource': 'admin',
-    #         'authMechanism': 'SCRAM-SHA-1',
-    #         'ssl': True,
-    #         'ssl_cert_reqs': ssl.CERT_NONE,
-    #     },
-    # },
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'abode_db',

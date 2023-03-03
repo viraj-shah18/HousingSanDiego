@@ -1,6 +1,6 @@
 # Running the Backend
 
-- First, activate your Python env.
+- First, activate your Python virtual env.
 - Be in the top-level directory and run ```pip install -r requirements.txt```.
 - ```cd backend``` 
 - Run the command ```python manage.py runserver``` to run your local server.
@@ -89,11 +89,11 @@ response = client.delete(url)
 
 ### url = 'api/property/id/<str:id>' [By id, GET one Property]
 
-NOT YET TESTED
+IMPLEMENTED, BUT NOT YET TESTED
 
-### url = 'api/property/search/<str:search_query>'[By id, GET multiple most relevant Properties based on distance]
+### url = 'api/property/search/<str:search_query>' [By id, GET multiple most relevant Properties based on distance]
 
-NOT YET TESTED
+NOT YET IMPLEMENTED
 
 # Testing the Endpoints with Python
 

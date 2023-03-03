@@ -17,6 +17,7 @@ from .models import *
 import json
 import logging
 logger = logging.getLogger('django')
+# use logger.debug("blah")
 
 from bson.objectid import ObjectId
 
@@ -32,7 +33,6 @@ def user_list(request):
         # 'safe=False' for objects serialization
  
     elif request.method == 'POST': # TESTED
-        print(request.data)
         user_data = request.data # JSONParser().parse(request) #didn't work      
         user_serializer = UserSerializer(data=user_data)
         
@@ -98,16 +98,6 @@ def property_search(request, search_query):
         return JsonResponse(property_serializer.data) 
 
 
-
-
-
-# create a viewset
-# class UserViewSet(viewsets.ModelViewSet):
-#     # define queryset
-#     queryset = User.objects.all()
-      
-#     # specify serializer to be used
-#     serializer_class = UserSerializer
 
 
 # https://pypi.org/project/geopy/ geolocator

@@ -1,13 +1,7 @@
-#from django.db import models
 from djongo import models
 from django.db.models import ImageField
+#from django.db import models
 
-
-# from djangotoolbox.fields import DictField, EmbeddedField
-# from enum import Enum
-
-IS_MIGRATE = True       # Only set this to False when NOT running makemigrate
-                        # Djongo work around, should otherwise ALWAYS be True
 
 # Sub-models =======================================
 class Profile_Info(models.Model):
@@ -18,8 +12,7 @@ class Profile_Info(models.Model):
 	prefs: str = models.CharField(max_length=280, blank=True, null=True)
 	more: str = models.CharField(max_length=120, blank=True, null=True)
 	class Meta:
-		abstract = IS_MIGRATE  # Set abstract=True to prevent this model from being created as a separate collection in MongoDB.
-
+		abstract = True  # Set abstract=True to prevent this model from being created as a separate collection in MongoDB.
 
 class Social_Info(models.Model):
 	phone: int = models.PositiveIntegerField(max_length=12, blank=True, null=True)
@@ -28,12 +21,7 @@ class Social_Info(models.Model):
 	whatsapp: int = models.PositiveIntegerField(max_length=12, blank=True, null=True)
 
 	class Meta:
-		abstract = IS_MIGRATE
-
-# class FRIEND_ENUM(Enum):
-# 	REQUESTED = 0
-# 	PENDING = 1
-# 	FRIENDS = 2
+		abstract = True
 
 class Friend(models.Model):
 	friend_id = models.ObjectIdField() # foreign key
@@ -71,7 +59,7 @@ class Collection_Object(models.Model):
 
 	class Meta:
 		abstract = True
-# End submodels =================================
+# End Sub-models =======================================
 
 
 class Collection(models.Model):
