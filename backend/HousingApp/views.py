@@ -85,10 +85,11 @@ def property_detail(request, id):
 
 # api/property/search/<str:search_query>
 @api_view(['GET'])
-def propproperty_search(request, search_query):
+def property_search(request, search_query):
     # find closest properties (in sorted order) by search_query str
+    # NOT YET IMPLEMENTED
     try: 
-        property_obj = Property.objects.get(pk=ObjectId(id)) 
+        property_obj = Property.objects.get(pk=ObjectId(search_query)) 
     except Property.DoesNotExist: 
         return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 

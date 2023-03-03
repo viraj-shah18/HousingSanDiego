@@ -31,6 +31,8 @@ All of the functionality for endpoints are implemented in ```views.py```.
 
 All of the URLs for these endpoints can be found across the several ```urls.py``` files.
 
+There will be three types of endpoints for our three different collections in MongoDB: User, Property, and Collection.
+
 ## Endpoints for User collection
 
 Here, I detail all of our endpoints as well as provide the Python code I tested them with. 
@@ -82,6 +84,16 @@ response = client.put(url, data=data, content_type='application/json')
 url = '/api/user/d3ffd299b2d6a0131f530809'
 response = client.delete(url)
 ```
+
+## Endpoints for Property collection
+
+### url = 'api/property/id/<str:id>' [By id, GET one Property]
+
+NOT YET TESTED
+
+### url = 'api/property/search/<str:search_query>'[By id, GET multiple most relevant Properties based on distance]
+
+NOT YET TESTED
 
 # Testing the Endpoints with Python
 
