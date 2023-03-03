@@ -9,9 +9,72 @@
 
   }
 
+.searchbar-searchpage {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    align-items: left;
+    flex-direction: column;
+    color: gradaday;  
+
+  }  
 .search {
     width: 30%;
     background:white; 
     opacity: 0.75;
 
   }
+
+.left-pane-search {
+    /* display: flex; */
+    /* height: 100vh; */
+    /* width: 100%; */
+    flex-direction: column;
+    row-gap: 10px;
+    color: gray; 
+    border-style: groove;     
+    height: 100vh;
+    overflow-y: scroll;
+  }
+
+  .card {
+    /* display: flex;
+    height: 100vh;
+    width: 50%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 20px;
+    color: white;  */
+    align-items: right;
+    width: 80%;
+    border-style: groove; 
+    margin-left: auto; 
+    margin-right: 0;  
+    margin-bottom: 2%;
+  }
+  .cardimg {
+    /* display: flex;
+    height: 100vh;
+    width: 50%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 20px;
+    color: white;  */
+    width: 100%;
+    border-style: groove;     
+  }
+
+.right-pane-search {
+    display: flex;
+    height: 100vh;
+    width: 50%;
+    align-items: right;
+    flex-direction: column;
+    row-gap: 20px;
+    color: white;
+    border-style: groove;      
+  }
+
+.row{
+  display: flex;
+}

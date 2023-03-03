@@ -4,6 +4,7 @@ import CollectionPage from './components/collectionList';
 import ProfilePage from './components/profilePage';
 import SearchPage from './components/searchPage';
 import FindRoommate from './components/findRoommate';
+import Cards from  './components/flatCardsWindow';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -40,12 +41,13 @@ const pages = [{
   path: '/',
 }
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Logout'];
 
 
-function App() {
+function App(props) {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [isLogin, setIsLogin] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [curPage,setCurPage] = React.useState('Home');
 
@@ -218,6 +220,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/find-roommate" element={<FindRoommate />} />   
+          <Route path="/cards" element={<Cards />} />   
       </Routes>
     </div>
   );
