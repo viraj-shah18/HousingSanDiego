@@ -10,11 +10,12 @@ If changes were made to the server (for example, edits to ```models.py``` or ```
 run these two commands before running the runserver command:
 - ```python manage.py makemigrations```
 - ```python manage.py migrate```
+
 You don't need to run these commands if you only changed ```views.py```.
 
 # Database
 
-The database is hosted in the cloud on MongoDB. Please send me the email address used for your
+The database is hosted in the cloud on MongoDB Atlas. If necessary, please send me the email address used for your
 MongoDB account so I can add you to the project for live GUI access via the MongoDB website.
 
 Otherwise, the database is already connected to the Django app via the ```settings.py```. Any requests made
@@ -91,7 +92,7 @@ response = client.delete(url)
 
 IMPLEMENTED, BUT NOT YET TESTED
 
-### url = 'api/property/search/<str:search_query>' [By id, GET multiple most relevant Properties based on distance]
+### url = 'api/property/search/<str:search_query>' [GET multiple most relevant Properties based on distance to search_query]
 
 NOT YET IMPLEMENTED
 
