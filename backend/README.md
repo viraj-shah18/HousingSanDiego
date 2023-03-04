@@ -83,6 +83,7 @@ data = {
 }
 response = client.post(url, data=data)
 ```
+*Note* that ```_id``` does not have to be provided for POST requests.
 
 ### url = '/api/user/<str:id>' [By id, GET one user, PUT one user, DEL one user]
 
