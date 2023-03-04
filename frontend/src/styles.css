@@ -35,6 +35,7 @@
     border-style: groove;     
     height: 100vh;
     overflow-y: scroll;
+    text-align: center;
   }
 
   .card {
@@ -67,14 +68,41 @@
 .right-pane-search {
     display: flex;
     height: 100vh;
-    width: 50%;
+    width: 100%;
     align-items: right;
     flex-direction: column;
     row-gap: 20px;
-    color: white;
-    border-style: groove;      
+    /* color: white;
+    border-style: groove;       */
   }
 
 .row{
   display: flex;
+}
+.row div {
+  flex-basis: 50%;
+  display: inline-block;
+}
+.google-map {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 20px;
+  color: white;  
+
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  background-color: #000;
+  border: 2px solid #fff;
+  border-radius: 100%;
+  user-select: none;
+  transform: translate(-50%, -50%);
 }
