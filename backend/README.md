@@ -27,7 +27,7 @@ To give a server running on your machine access to the MongoDB Atlas cloud insta
 ```
 HOST = "localhost"
 ```
-to
+to:
 ```
 HOST = 'mongodb+srv://abodegenius:sHnSgURodYwUws3U@cluster0.pjbn6j9.mongodb.net/?retryWrites=true&w=majority'
 ```
