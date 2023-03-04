@@ -14,10 +14,12 @@ from .models import User, Property
 from .serializers import UserSerializer, PropertySerializer
 from .models import *
 
+
 import json
 import logging
 logger = logging.getLogger('django')
-# use logger.debug("blah")
+# To use the debugger when a server is running: logger.debug("blah")
+# When using the python shell to test, just use: print("blah")
 
 from bson.objectid import ObjectId
 
@@ -29,7 +31,7 @@ def user_list(request):
         users = User.objects.all()
         
         user_serializer = UserSerializer(users, many=True)
-        return JsonResponse(user_serializer.data, safe=False)
+        return JsonResponse({"list" : user_serializer.data})
         # 'safe=False' for objects serialization
  
     elif request.method == 'POST': # TESTED
@@ -70,6 +72,16 @@ def user_detail(request, id):
         return JsonResponse({'message': 'User was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 
+# Property Endpoints ===================================
+
+# api/property
+@api_view(['GET'])
+def property_list(request):
+    if request.method == 'GET': # TESTED
+        property_objs = Property.objects.all()
+        property_serializer = PropertySerializer(property_objs, many=True)  
+        return JsonResponse(property_serializer.data, safe=False)   
+
 # api/property/id/<str:id>
 @api_view(['GET'])
 def property_detail(request, id):
@@ -79,24 +91,43 @@ def property_detail(request, id):
     except Property.DoesNotExist: 
         return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-    if request.method == 'GET': # NOT TESTED
+    if request.method == 'GET': # TESTED
         property_serializer = PropertySerializer(property_obj) 
         return JsonResponse(property_serializer.data) 
+
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
+geolocator = Nominatim(user_agent="HousingApp")
 
 # api/property/search/<str:search_query>
 @api_view(['GET'])
 def property_search(request, search_query):
     # find closest properties (in sorted order) by search_query str
-    # NOT YET IMPLEMENTED
-    try: 
-        property_obj = Property.objects.get(pk=ObjectId(search_query)) 
-    except Property.DoesNotExist: 
-        return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-    if request.method == 'GET': # NOT TESTED
-        property_serializer = PropertySerializer(property_obj) 
-        return JsonResponse(property_serializer.data) 
+    if request.method == 'GET': # TESTED
+        property_objs = Property.objects.all()
+        property_serializer = PropertySerializer(property_objs, many=True)  
 
+        location = geolocator.geocode(search_query.replace("_", " ")) 
+        coords = (location.latitude, location.longitude)
+
+        print("Parsed Address:")
+        print(location.address)
+        print(coords)
+
+        property_mile_list = [] # contains objs that look like { property: {property model}, Miles: 0 }
+
+        # For each property in the DB, calculate geodesic distance between the search_query and property
+        for property_dict in property_serializer.data:
+            miles = geodesic(coords, (property_dict["latitude"], property_dict["longitude"])).miles
+            property_mile_list.append({ "property" : property_dict, "miles" : miles})
+
+        # Sort properties by distance, ascending
+        property_mile_list.sort(key=lambda property_mile: property_mile["miles"])
+
+        # Return a JSON list of objects, each obj has field property and miles
+        return JsonResponse({"list" : property_mile_list})   
+        
 
 
 
