@@ -19,6 +19,7 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import { Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import {useNavigate,useLocation} from 'react-router-dom';
 
 const editIconStyle = {
     margin: 0,
@@ -79,7 +80,8 @@ const itemData = [
   ];
 
 function ProfilePage() {
-    const [userName, setUserName] = useState("Anonymous");
+    const location = useLocation();
+    const [userName, setUserName] = useState(location.state.loginInfo.display_name);
     const [userImage, setUserImage] = useState("../profile.png");
     const [selectedImage, setSelectedImage] = useState(null);
     const [missUserName, setMissUserName] = useState(false);
@@ -236,7 +238,9 @@ function ProfilePage() {
                     />                                       
                 </Typography>
 
-
+                <Typography variant="h5" gutterBottom align='center'>
+                    My userid: {location.state.loginInfo._id}
+                </Typography>
                 <Typography variant="h3" gutterBottom align='center' >
                     {editMode ? <TextField
                                     required
