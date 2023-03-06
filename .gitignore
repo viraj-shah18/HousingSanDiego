@@ -113,3 +113,7 @@ venv
 
 # Google Map keys
 google_maps_api_key.json
+
+#keys
+.keys/
+backend/backend/keys/
