@@ -40,7 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     'corsheaders',
-    "HousingApp"
+    'HousingApp',
+    'users',
+    # Oauth
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +73,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # Oauth
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -130,6 +138,16 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.ObjectIdField"
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+        # django-oauth-toolkit >= 1.0.0
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'drf_social_oauth2.authentication.SocialAuthentication',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_PARSER_CLASSES': (
@@ -138,6 +156,15 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
      )
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+    # drf_social_oauth2
+    'drf_social_oauth2.backends.DjangoOAuth2',
+]
+
+
 
 LOGGING = {
     "version": 1,
@@ -152,3 +179,14 @@ LOGGING = {
         },
     }
 }
+
+GOOGLE_CLIENT_ID= '79587116183-2c0475ucjimb51rn43pudi733p6kka30.apps.googleusercontent.com',
+GOOGLE_CLIENT_SECRET='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',
+GOOGLE_REDIRECT_URI= 'http://localhost:8000/property'
+SOCIAL_AUTH_GOOGLE_AUTH_EXTRA_ARGUMENTS = {'fields': 'email'}
+SOCIAL_AUTH_USER_FIELDS = ['email', 'username', 'password']
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]

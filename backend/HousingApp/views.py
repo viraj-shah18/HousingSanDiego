@@ -10,8 +10,8 @@ from rest_framework.decorators import api_view
 from rest_framework import viewsets
   
 # import local data
-from .models import User, Property
-from .serializers import UserSerializer, PropertySerializer
+from .models import Property
+from .serializers import PropertySerializer
 from .models import *
 
 
@@ -23,53 +23,62 @@ logger = logging.getLogger('django')
 
 from bson.objectid import ObjectId
 
+#line to import PyMongo:
+# import pymongo
+# from pymongo.errors import ConnectionFailure
+# client = pymongo.MongoClient('mongodb+srv://abodegenius:sHnSgURodYwUws3U@cluster0.pjbn6j9.mongodb.net/?retryWrites=true&w=majority')
+# try:
+#     # The ping command is cheap and does not require auth.
+#     client.admin.command('ping')
+# except ConnectionFailure:
+#     print("Server not available")
 
-# /api/user 
-@api_view(['GET', 'POST'])
-def user_list(request):
-    if request.method == 'GET': # TESTED
-        users = User.objects.all()
+# # /api/user 
+# @api_view(['GET', 'POST'])
+# def user_list(request):
+#     if request.method == 'GET': # TESTED
+#         users = User.objects.all()
         
-        user_serializer = UserSerializer(users, many=True)
-        return JsonResponse({"list" : user_serializer.data})
-        # 'safe=False' for objects serialization
+#         user_serializer = UserSerializer(users, many=True)
+#         return JsonResponse({"list" : user_serializer.data})
+#         # 'safe=False' for objects serialization
  
-    elif request.method == 'POST': # TESTED
-        user_data = request.data # JSONParser().parse(request) #didn't work      
-        user_serializer = UserSerializer(data=user_data)
+#     elif request.method == 'POST': # TESTED
+#         user_data = request.data # JSONParser().parse(request) #didn't work      
+#         user_serializer = UserSerializer(data=user_data)
         
-        if user_serializer.is_valid():
-            user_serializer.save()
-            return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
+#         if user_serializer.is_valid():
+#             user_serializer.save()
+#             return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
 
-        return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# api/user/<str:id>
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_detail(request, id):
-    # find user by id
-    try: 
-        user = User.objects.get(pk=ObjectId(id)) 
-    except User.DoesNotExist: 
-        return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+# # api/user/<str:id>
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def user_detail(request, id):
+#     # find user by id
+#     try: 
+#         user = User.objects.get(pk=ObjectId(id)) 
+#     except User.DoesNotExist: 
+#         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-    if request.method == 'GET': # TESTED
-        user_serializer = UserSerializer(user) 
-        return JsonResponse(user_serializer.data) 
+#     if request.method == 'GET': # TESTED
+#         user_serializer = UserSerializer(user) 
+#         return JsonResponse(user_serializer.data) 
 
-    elif request.method == 'PUT': # TESTED
-        user_data = request.data
-        user_serializer = UserSerializer(user, data=user_data) 
+#     elif request.method == 'PUT': # TESTED
+#         user_data = request.data
+#         user_serializer = UserSerializer(user, data=user_data) 
 
-        if user_serializer.is_valid(): 
-            user_serializer.save() 
-            return JsonResponse(user_serializer.data) 
+#         if user_serializer.is_valid(): 
+#             user_serializer.save() 
+#             return JsonResponse(user_serializer.data) 
 
-        return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE': # TESTED
-        user.delete() 
-        return JsonResponse({'message': 'User was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+#     elif request.method == 'DELETE': # TESTED
+#         user.delete() 
+#         return JsonResponse({'message': 'User was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
 
 # Property Endpoints ===================================

@@ -23,21 +23,21 @@ class Social_Info(models.Model):
 	class Meta:
 		abstract = True
 
-class Friend(models.Model):
-	friend_id = models.ObjectIdField() # foreign key
-	STATUS_CHOICES = (
-		('P', 'Pending'),
-		('R', 'Requested'),
-		('F', 'Friends'),
-	)
-	status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+# class Friend(models.Model):
+# 	friend_id = models.ObjectIdField() # foreign key
+# 	STATUS_CHOICES = (
+# 		('P', 'Pending'),
+# 		('R', 'Requested'),
+# 		('F', 'Friends'),
+# 	)
+# 	status = models.CharField(max_length=1, choices=STATUS_CHOICES)
 
-	@property
-	def friend_ref(self):
-		return User.objects.get(id=self.friend_id)
+# 	@property
+# 	def friend_ref(self):
+# 		return User.objects.get(id=self.friend_id)
 
-	class Meta:
-		abstract = True
+# 	class Meta:
+# 		abstract = True
 
 class Address(models.Model):
 	street_address: str = models.CharField(max_length=30)
@@ -68,12 +68,12 @@ class Collection(models.Model):
 	desc: str = models.CharField(max_length=120, blank=True, null=True)
 	properties_list = models.EmbeddedField(model_container=Collection_Object, blank=True, null=True)
 	
-class User(models.Model):
-	_id: str = models.ObjectIdField(primary_key=True)
-	display_name: str = models.CharField(max_length=32)
-	is_profile_displayed = models.BooleanField()
-	profile_info = models.EmbeddedField(model_container=Profile_Info, blank=True, null=True)
-	social_info = models.EmbeddedField(model_container=Social_Info, blank=True, null=True)
+# class User(models.Model):
+# 	_id: str = models.ObjectIdField(primary_key=True)
+# 	display_name: str = models.CharField(max_length=32)
+# 	is_profile_displayed = models.BooleanField()
+# 	profile_info = models.EmbeddedField(model_container=Profile_Info, blank=True, null=True)
+# 	social_info = models.EmbeddedField(model_container=Social_Info, blank=True, null=True)
 
 	# friends = models.ArrayField(
 	# 	model_container=Friend, # sub doc
