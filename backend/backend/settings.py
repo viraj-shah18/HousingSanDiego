@@ -152,3 +152,11 @@ LOGGING = {
         },
     }
 }
+
+# CORS ISSUE
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8000',
+    'httpS://localhost:8000',
+    'http://localhost:3000'
+)
