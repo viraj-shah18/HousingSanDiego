@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from .keys import client_secret, client_id
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -180,8 +181,8 @@ LOGGING = {
     }
 }
 
-GOOGLE_CLIENT_ID= '79587116183-2c0475ucjimb51rn43pudi733p6kka30.apps.googleusercontent.com',
-GOOGLE_CLIENT_SECRET='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',
+GOOGLE_CLIENT_ID= client_id
+GOOGLE_CLIENT_SECRET= client_secret
 GOOGLE_REDIRECT_URI= 'http://localhost:8000/property'
 SOCIAL_AUTH_GOOGLE_AUTH_EXTRA_ARGUMENTS = {'fields': 'email'}
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username', 'password']
