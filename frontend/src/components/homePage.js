@@ -23,7 +23,12 @@ function Search({ details }) {
       // 13 refers to Enter key 
       if(e.keyCode == 13){
         console.log('Search query: ', e.target.value);
-        navigate("/search")
+        //navigate("/search")
+        navigate("/search", {
+          state: {
+              query: e.target.value, //pass search query into state.query prop
+          },
+      });
       }
     }
 
