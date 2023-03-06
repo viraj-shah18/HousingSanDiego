@@ -23,15 +23,6 @@ logger = logging.getLogger('django')
 
 from bson.objectid import ObjectId
 
-#line to import PyMongo:
-# import pymongo
-# from pymongo.errors import ConnectionFailure
-# client = pymongo.MongoClient('mongodb+srv://abodegenius:sHnSgURodYwUws3U@cluster0.pjbn6j9.mongodb.net/?retryWrites=true&w=majority')
-# try:
-#     # The ping command is cheap and does not require auth.
-#     client.admin.command('ping')
-# except ConnectionFailure:
-#     print("Server not available")
 
 # # /api/user 
 # @api_view(['GET', 'POST'])
