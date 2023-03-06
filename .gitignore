@@ -108,3 +108,4 @@ dist
 
 # Virtual Environment
 .venv/
+venv
