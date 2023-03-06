@@ -109,3 +109,6 @@ dist
 # Virtual Environment
 .venv/
 venv
+
+# Google Map keys
+google_maps_api_key.json
