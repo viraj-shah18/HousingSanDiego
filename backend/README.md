@@ -102,12 +102,14 @@ curl -X POST -d "grant_type=refresh_token&client_id=<client_id>&client_secret=<c
 Revoke tokens:
 
 Revoke a single token:
+http://localhost:8000/auth/revoke-token
 
 ```
 curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&token=<your_token>" http://localhost:8000/auth/revoke-token
 ```
 
 Revoke all tokens for a user:
+http://localhost:8000/auth/invalidate-sessions
 
 ```
 curl -H "Authorization: Bearer <token>" -X POST -d "client_id=<client_id>" http://localhost:8000/auth/invalidate-sessions
