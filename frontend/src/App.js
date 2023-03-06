@@ -6,6 +6,7 @@ import SearchPage from './components/searchPage';
 import FindRoommate from './components/findRoommate';
 import LoginPage from './components/loginPage';
 import Cards from  './components/flatCardsWindow';
+import LaJollaMap from './components/map'; //testing
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -235,7 +236,7 @@ function App(props) {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/find-roommate" element={<FindRoommate />} />   
-          <Route path="/cards" element={<Cards />} />   
+          <Route path="/map" element={<LaJollaMap />} />   
       </Routes>
     </div>
   );
