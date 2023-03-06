@@ -3,9 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import data from '../keys/google_maps_api_key.json'
 import Marker from "./marker";
 
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
-export default function LaJollaMap(){
+export default function LaJollaMap({marks}){
   const defaultProps = {
     center: {
       lat: 32.842674,
@@ -22,19 +20,21 @@ export default function LaJollaMap(){
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <AnyReactComponent
-          lat={32.842674}
-          lng={-117.257767}
-          text="My Marker"
-        />
 
         {/* TODO: LOOP THROUGH FLATS AND GET ALL PINS ON MAP WITH THEIR NAME */}
-        <Marker
+        {marks.map((mark, index) => <Marker 
+                                        key={index} 
+                                        lat={mark.latitude} 
+                                        lng={mark.longitude}
+                                        name={mark.name}
+                                        color="blue" 
+                                        />)}
+        {/* <Marker
           lat={32.842674}
           lng={-117.257767}
           name="My Marker"
           color="blue"
-        />
+        /> */}
 
       </GoogleMapReact>
     </div>

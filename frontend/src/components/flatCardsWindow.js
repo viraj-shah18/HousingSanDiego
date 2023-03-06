@@ -82,9 +82,28 @@ const get_flat_list = async() =>
     axios.get("http://127.0.0.1:8000/api/property/search/UC_San_Diego")
     .then( (response) => {
       console.log("DidMount: ", response)
-        this.setState({
-          flats: response.data.list
-        });
+      // Get array of coordinates
+      var data = response.data.list
+      var coordinates = []
+      var i ;
+      for(i=0; i < data.length; i++){
+        var lat = data[i].property.latitude
+        var long = data[i].property.longitude
+        coordinates.push(
+          {
+            latitude: lat,
+            longitude: long,
+            name:"test_name"
+
+          }
+        )
+      }
+      console.log("DidMount-coord: ", coordinates)
+
+      this.setState({
+        flats: response.data.list,
+        coords: coordinates
+      });
     })
     .catch( (error) => {
         console.log(error);
@@ -98,7 +117,8 @@ const get_flat_list = async() =>
       //     users: []
       // }
       this.state ={
-        flats: []
+        flats: [],
+        coords: []
       }
       
   }
@@ -129,7 +149,8 @@ const get_flat_list = async() =>
           </div>
           {/* <div className="right-pane-search">     */}
           <div>
-            <LaJollaMap />
+            {console.log("this.state.coords: test ", this.state.coords)}
+            <LaJollaMap marks={this.state.coords}/>
           </div>
 
           </div> {/*  end of row */}
