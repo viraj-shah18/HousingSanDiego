@@ -65,9 +65,13 @@ POST http://localhost:8000/register/
  ```
   "Request Body": {
     "name": "Custom User Create",
-    "description": "\"\"",
-    "renders": "[\"application/json\", \"text/html\"]",
-    "parses": "[\n        \"application/json\",\n        \"application/x-www-form-urlencoded\",\n        \"multipart/form-data\"\n    ]",
+    "description": "",
+    renders: "["application/json", "text/html"]"
+parses: "[
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ]"
     "Media type": "application/json",
     "email": "some-valid-email",
     "password": "give_a_password",
@@ -76,9 +80,38 @@ POST http://localhost:8000/register/
   "Response Headers": {
     "content-type": "application/json",
   },
-  "Response Body": "{\"email\":\"some-valid-email\",\"username\":\"given_username\"}"
+  "Response Body": "{"email":"some-valid-email","username":"give_a_username"}"
 }
  ```
+
+#### Google OAuth login
+http://localhost:8000/auth/token
+
+Retrieve a token for a user using curl:
+
+```
+curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&grant_type=password&username=<user_name>&password=<password>" http://localhost:8000/auth/token
+
+```
+<client_id> and <client_secret> are the keys in the backend/backend/keys/key.py
+
+Refresh token:
+```
+curl -X POST -d "grant_type=refresh_token&client_id=<client_id>&client_secret=<client_secret>&refresh_token=<your_refresh_token>" http://localhost:8000/auth/token
+```
+Revoke tokens:
+
+Revoke a single token:
+
+```
+curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&token=<your_token>" http://localhost:8000/auth/revoke-token
+```
+
+Revoke all tokens for a user:
+
+```
+curl -H "Authorization: Bearer <token>" -X POST -d "client_id=<client_id>" http://localhost:8000/auth/invalidate-sessions
+```
 
 <!--
 ### url = '/api/user' [GET all users, POST one user]
