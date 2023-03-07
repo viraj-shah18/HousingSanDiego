@@ -26,7 +26,9 @@ SECRET_KEY = "django-insecure-%fz9fft^f8+$m+2g4w&aag2ky0%x-&2jiugjmoht^0g0*jw+5$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+]
 
 
 # Application definition
@@ -181,6 +183,13 @@ LOGGING = {
     }
 }
 
+
+CORS_ALLOW_HEADERS = "*"
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8000',
+    'http://localhost:3000',
+)
+
 GOOGLE_CLIENT_ID= client_id
 GOOGLE_CLIENT_SECRET= client_secret
 GOOGLE_REDIRECT_URI= 'http://localhost:8000/property'
@@ -191,3 +200,4 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
+
