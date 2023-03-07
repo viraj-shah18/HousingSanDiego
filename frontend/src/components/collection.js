@@ -1,11 +1,12 @@
-import * as React from 'react';
+import React, { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
-import axios from 'axios';
+// import axios from 'axios';
+import TextField from '@mui/material/TextField';
 
 
 const style = {
@@ -18,32 +19,59 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 2,
-  };
+};
   
 const RemoveItem = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#f00',
+    backgroundColor: '#e34b4b',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
     fontWeight: 'bold',
     color: theme.palette.text.secondary,
-  }));
+}));
 
   const AddItem = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#0f0',
+    backgroundColor: '#24d42b',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
     fontWeight: 'bold',
     color: theme.palette.text.secondary,
-  }));
+}));
 
+function CollectionList(props) {
+  console.log(props);
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={3}>
+        <img src={ props.img } width='190px' height='110px' alt="No alt text"/>
+      </Grid>
+      <Grid item xs={7}>
+      <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}> {props.name} </Typography>
+        <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}> { props.num_places } places</Typography>
+      </Grid>
+      <Grid item xs={2}>
+        <RemoveItem>Remove</RemoveItem>
+      </Grid>
+    </Grid>
+  )
+};
+  
 
 export default function Collection () {
     // from backend -> Need list of ids for collections present
-    const collection_ids = [1, 2, 3, 4]    
-    const num_collections = collection_ids.length;
-    console.log(num_collections)
+    
+    const collection_names = ["Houses near UCSD", "Houses near Ralphs", "3 Bedrooms" , "4 Bedrooms", "Inexpensive options"];
+    const num_places = [1, 2, 3, 4, 5];
+    const images = ['../imgs/home.jpg', '../collectionpage.png', '../home.png', '../findroommate.png', '../imgs/home.jpg'];
+
+    let collections_list = [];
+    for (var i = 0; i < collection_names.length; i++){
+      collections_list.push(<CollectionList name={collection_names[i]} num_places={num_places[i]} img={images[i]} />)
+    }
+    console.log(collections_list);
+
     
     return (
       <Box sx={style}>
@@ -52,123 +80,58 @@ export default function Collection () {
         </Typography>
         <Divider variant="middle" sx={{ p:1}}/> 
         <Box sx={{ flexGrow: 1, maxHeight: 300, overflow: 'auto' }}>
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <img src={ require('../imgs/home.jpg') } width='190px' height='110px' />
-            </Grid>
-            <Grid item xs={7}>
-              <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}>Houses near UCSD {collection_ids[0]}</Typography>
-              <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}>7 places</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <RemoveItem>Remove</RemoveItem>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <img src={ require('../collectionpage.png') } width='190px' height='110px' />
-            </Grid>
-            <Grid item xs={7}>
-            <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}>Houses near UCSD {collection_ids[0]}</Typography>
-            <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}>7 places</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <RemoveItem>Remove</RemoveItem>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-                <img src={ require('../home.png') } width='190px' height='110px' />
-            </Grid>
-            <Grid item xs={7}>
-            <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}>Houses near UCSD {collection_ids[0]}</Typography>
-                <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}>7 places</Typography>
-            </Grid>
-            <Grid item xs={2}>
-                <RemoveItem>Remove</RemoveItem>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <img src={ require('../findroommate.png') } width='190px' height='110px' />
-            </Grid>
-            <Grid item xs={7}>
-            <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}>Houses near UCSD {collection_ids[0]}</Typography>
-              <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}>7 places</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <RemoveItem>Remove</RemoveItem>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <img src={ require('../home.png') } width='190px' height='110px' />
-            </Grid>
-            <Grid item xs={7}>
-            <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}>Houses near UCSD {collection_ids[0]}</Typography>
-              <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}>7 places</Typography>
-            </Grid>
-            <Grid item xs={2}>
-              <RemoveItem>Remove</RemoveItem>
-            </Grid>
-          </Grid>
-      </Box>
-
-      {/* Create new collection */}
-      <Divider variant="middle" sx={{ p:1}}/> 
-      <Box paddingTop={'2rem'} >
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <Typography>
-              Create new collection: 
-            </Typography>
-          </Grid>
-          <Grid item xs={7}>
-            <Typography>
-              Placeholder
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography>
-              <AddItem>Add</AddItem>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-  </Box>
-    );
+          {collections_list}
+        </Box>
+        <Divider variant="middle" sx={{ p:0.2}}/> 
+        <AddCollectionInput/>
+      </Box>);
 }   
 
 
-export async function FetchCollections(userId) {
-  let data;
-  await axios.get('http://localhost:8000/api/user_collection/${userId}')
-    .then(res => {
-      console.log({res})
-      data = res.data;
-      console.log({data})
-  })
-  .catch(err => {})
-  return (data);
-}
+// export async function FetchCollections(userId) {
+  //   let data;
+//   await axios.get('http://localhost:8000/api/user_collection/${userId}')
+//     .then(res => {
+  //       console.log({res})
+  //       data = res.data;
+  //       console.log({data})
+//   })
+//   .catch(err => {})
+//   return (data);
+// }
 
-function collectionList({name, num_places, img}) {
+
+function AddCollectionInput() {
+  const [textInput, setTextInput] = useState('');
+  
+  const handleTextInputChange = event => {
+    setTextInput(event.target.value);
+    console.log({textInput});
+  };
+  
+  const sendTextInput = event => {
+    // create api request here
+    console.log("Button clicked", textInput);
+    setTextInput('');
+  }
+  
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={3}>
-        <img src={ require('../home.png') } width='190px' height='110px' />
+    <Box paddingTop={'2rem'} >
+      <Grid container spacing={2}>
+        <Grid item xs={3}>
+          <Typography paddingTop={'0.4em'} fontSize={'16px'} fontWeight={'bold'}>
+            Create new collection: 
+          </Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <TextField fullWidth size='small' id="outlined-basic" label="New Collection Name" variant="outlined" value= {textInput} onChange= {handleTextInputChange}/>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography>
+            <AddItem onClick={sendTextInput}>Add</AddItem>
+          </Typography>
+        </Grid>
       </Grid>
-      <Grid item xs={7}>
-      <Typography align='left' margin='1.5rem 0px 0px 1rem' fontWeight={'bold'}> {name} </Typography>
-        <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}> { num_places } </Typography>
-      </Grid>
-      <Grid item xs={2}>
-        <RemoveItem>Remove</RemoveItem>
-      </Grid>
-    </Grid>
+    </Box>
   )
-}
+};
