@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 from .keys.key import client_secret, client_id
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -134,6 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -145,7 +148,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-
+        'rest_framework.authentication.BasicAuthentication',  # enables simple command line authentication
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
         # django-oauth-toolkit >= 1.0.0
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
@@ -183,7 +188,6 @@ LOGGING = {
     }
 }
 
-
 CORS_ALLOW_HEADERS = "*"
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
@@ -192,7 +196,7 @@ CORS_ORIGIN_WHITELIST = (
 
 GOOGLE_CLIENT_ID= client_id
 GOOGLE_CLIENT_SECRET= client_secret
-GOOGLE_REDIRECT_URI= 'http://localhost:8000/property'
+GOOGLE_REDIRECT_URI= 'properties_list'
 SOCIAL_AUTH_GOOGLE_AUTH_EXTRA_ARGUMENTS = {'fields': 'email'}
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username', 'password']
 
@@ -201,3 +205,5 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
 
+LOGIN_URL='register_user'
+LOGIN_REDIRECT_URL = 'properties_list'
