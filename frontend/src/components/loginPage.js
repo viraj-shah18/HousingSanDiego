@@ -36,6 +36,7 @@ function LoginPage(props) {
     const navigate = useNavigate();
     //false = login true = create account
     const [loginAndCreate,setLoginAndCreate] = useState("SignIn");
+    const [userEmail,setUserEmail] = useState("");
     const [userName,setUserName] = useState("");
     const [password,setPassword] = useState("");
     const [showPassword, setShowPassword] = React.useState(false);
@@ -48,17 +49,19 @@ function LoginPage(props) {
       };
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleChange = (event,newSelection) => {
-        setLoginAndCreate(newSelection);
+        if(newSelection!=null)
+            setLoginAndCreate(newSelection);
+        console.log(newSelection)
       };
     const handleClickLogin = async () => {
         setIsLoginFailed(false);
         let userInfo;
         console.log("username:",userName,"password:",password);
         try{
-            userInfo = await FetchUser(userName)
+            userInfo = await FetchUser(userName,password)
             console.log('fetchUserInfo',userInfo)
 
-            if(typeof(userInfo) === 'undefined'){
+            if(typeof(userInfo) === 'undefined' || userInfo.username === null){
                 setIsLoginFailed(true)
                 console.log("cannot fetch")
             }else{
@@ -72,7 +75,7 @@ function LoginPage(props) {
         setIsSignUpFailed(false);
         let userInfo;
         try{
-            userInfo = await CreateUser(userName)
+            userInfo = await CreateUser(userName,userEmail,password)
             if(userInfo===null){
                 console.log("create failed")
                 setIsSignUpFailed(true)
@@ -111,6 +114,14 @@ function LoginPage(props) {
                         <ToggleButton value="SignUp" sx={{ width: '90%', mx:'auto' }}>Sign Up</ToggleButton>
                     
                     </ToggleButtonGroup>
+                    {(loginAndCreate==="SignUp")?
+                        <TextField
+                            label="Useremail"
+                            id="login-useremail"
+                            sx={{ mx:'auto', width: '35ch' }}
+                            onChange={(event) => setUserEmail(event.target.value)}
+                        />                    
+                    :<></>}
 
                     <TextField
                         label="Username"
@@ -156,7 +167,7 @@ function LoginPage(props) {
                         <Box align='center'>
                             {isSignUpFailed?
                                 <Typography variant="h6" gutterBottom align='center' >
-                                    <text style={ {color:'red'} }>Invalid username!</text>
+                                    <text style={ {color:'red'} }>Invalid input! Password should not be less than 8 characters!</text>
                                 </Typography>                            
                             :<></>}
                             <Button  variant="contained" sx={{ mx:'auto',px:'10%' }} align='center'

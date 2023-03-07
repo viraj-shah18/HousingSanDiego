@@ -56,13 +56,14 @@ const itemData = [
     },
   ];
   function isNumeric(str) {
+    if (typeof str == "number") return true
     if (typeof str != "string") return false // we only process strings!  
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
            !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
   function ProfilePage() {
     const location = useLocation();
-    const [userName, setUserName] = useState(location.state.loginInfo.display_name);
+    const [userName, setUserName] = useState(location.state.loginInfo.username);
     const [userImage, setUserImage] = useState("../profile.png");
     const [selectedImage, setSelectedImage] = useState(null);
     const [missUserName, setMissUserName] = useState(false);
@@ -134,9 +135,10 @@ const itemData = [
     const openVisi = Boolean(anchorElVisi);
     const handleSaveEdit = async () => {
         let data = {
-            _id:location.state.loginInfo._id,
-            display_name:userName,
+            username:location.state.loginInfo.username,
+            //display_name:username,
             is_profile_displayed:!profileLocked,
+            password:location.state.loginInfo.password,
             phone:userPhone,
             email:userEmail,
             aboutMe:aboutMe,
@@ -250,20 +252,20 @@ const itemData = [
                 </Typography>
 
 
-                <Typography variant="h5" gutterBottom align='center'>
+                {/* <Typography variant="h5" gutterBottom align='center'>
                     My userid: {location.state.loginInfo._id}
-                </Typography>
+                </Typography> */}
                 {/* username textarea (required)*/}
                 <Typography variant="h3" gutterBottom align='center' >
-                    {editMode ? <TextField
+                    {/* {editMode ? <TextField
                                     required
                                     id="outlined-required"
                                     label="Required"
                                     defaultValue={userName}
                                     onChange={(event) => setUserName(event.target.value)}
                                     /> : <text>{userName}</text>
-                                    }
-                    
+                                    } */}
+                    <text>{userName}</text>
                 </Typography>
                 {missUserName?
                                 <Typography variant="h6" gutterBottom align='center' >

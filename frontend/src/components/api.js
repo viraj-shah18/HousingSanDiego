@@ -2,25 +2,35 @@
 
 import React from 'react';
 import axios from 'axios';
- 
-export async function FetchAllUsers() {
-    let data ;
-    try{
-        await axios.get('http://localhost:8000/api/user')
-        .then(res => {
-            console.log("res:",res)
-            data = res.data.list;
-            console.log("data:",data)
-        })
-    }catch(error){
-
+const config = {
+    headers:{
+        'Access-Control-Allow-Origin': "*",
     }
-}
+  };
+// export async function FetchAllUsers() {
+//     let data ;
+//     try{
+//         await axios.get('http://localhost:8000/api/user')
+//         .then(res => {
+//             console.log("res:",res)
+//             data = res.data.list;
+//             console.log("data:",data)
+//         })
+//     }catch(error){
 
-export async function FetchUser(userId) {
+//     }
+// }
+
+export async function FetchUser(userId,password) {
+
+    let auth= {
+          'username': userId,
+          'password': password
+        }
+
     let data = {
-        _id:null,
-        display_name:null,
+        username:null,
+        //display_name:null,
         is_profile_displayed:false,
         phone:null,
         email:null,
@@ -28,61 +38,64 @@ export async function FetchUser(userId) {
         hobbies:null,
         major:null,
         prefs:null,
+        password:password
     }
     let profile_info
-    let social_info
     console.log("userId:",userId)
     try{
-        await axios.get(`http://localhost:8000/api/user/${userId}`)
+        //await axios.get(`http://localhost:8000/api/user/${userId}`)
+        await axios.get(`http://localhost:8000/profile/`,{auth:auth})
         .then(res => {
             console.log("res:",res)
-            data._id = res.data._id
-            data.display_name = res.data.display_name
-            data.is_profile_displayed = res.data.is_profile_displayed
-            profile_info = JSON.parse(res.data.profile_info)
-            social_info = JSON.parse(res.data.social_info)
+            data.username = res.data.username
+            //data.display_name = res.data.display_name
+            //data.is_profile_displayed = res.data.is_profile_displayed
+            data.email = res.data.email
+            profile_info = res.data.profile
             if(profile_info){
                 data.aboutMe = profile_info.intro
                 data.hobbies = profile_info.hobbies
                 data.major = profile_info.clubs
                 data.prefs = profile_info.prefs
+                data.phone = profile_info.phone
+                //data.is_profile_displayed = profile_info.is_profile_displayed
+              
             }
-            if(social_info){
-                data.phone = social_info.phone
-                data.email = social_info.email
-            }
+
             console.log("data:",data)
             
         })
     }catch(error){
         console.log("fetchuser error:",error)
+        return null
     }
     return(data)
 }
 
 export async function UploadUser(userInfo) {
+    let auth= {
+        'username': userInfo.username,
+        'password': userInfo.password
+      }
     const data = {
-        '_id': userInfo._id,
-        'display_name': userInfo.display_name,
-        'is_profile_displayed': userInfo.is_profile_displayed,
-        'profile_info':null,
-        'social_info':null,
+        'username': userInfo.username,
+        'email' : userInfo.email,
+        'profile':null,
     };
-    data.profile_info = JSON.stringify({
+    data.profile = {
         'intro': userInfo.aboutMe,
         'hobbies': userInfo.hobbies,
         'clubs': userInfo.major,
         'prefs':userInfo.prefs,
         'more':null,
-    });
-    data.social_info = JSON.stringify({
         'phone' : userInfo.phone,
-        'email' : userInfo.email,
-    });
+        //'is_profile_displayed' : userInfo.is_profile_displayed,
+    }
+    console.log("auth",auth)
     console.log("upload data pack: ",data)
     console.log(typeof(data.profile_info))
     try{
-        await axios.put(`http://localhost:8000/api/user/${userInfo._id}`,data)
+        await axios.put(`http://localhost:8000/profile/`,data,{auth:auth})
         .then(res=>{
             console.log(res)
         })
@@ -91,20 +104,31 @@ export async function UploadUser(userInfo) {
     }
 }
 
-export async function CreateUser(userId) {
+export async function CreateUser(userId,userEmail,password) {
     let data = {
-        '_id': userId,
-        'display_name': userId,
-        'is_profile_displayed': true,
-        phone:null,
-        email:null,
-        aboutMe:null,
-        hobbies:null,
-        major:null,
-        prefs:null,
+        'email': userEmail,
+        'username': userId,
+        'password': password,
+        "name": "Custom User Create",
+        "description": "",
+        renders: `["application/json", "text/html"]`,
+        parses: `[
+            "application/json",
+            "application/x-www-form-urlencoded",
+            "multipart/form-data"
+        ]`,
+        "Media type": "application/json",
+        // 'is_profile_displayed': true,
+        // phone:null,
+        // email:null,
+        // aboutMe:null,
+        // hobbies:null,
+        // major:null,
+        // prefs:null,
     }
     try{
-        await axios.post(`http://localhost:8000/api/user`,data)
+        console.log(data)
+        await axios.post(`http://localhost:8000/register/`,data,{"content-type": "application/json"})
         .then(res=>{
             console.log(res)
             
@@ -113,5 +137,32 @@ export async function CreateUser(userId) {
         console.log("uploaduser error :",error)
         return null
     }
-    return data
+    let auth= {
+        'username': userId,
+        'password': password
+      }
+    const profiledata = {
+        username:userId,
+        //display_name:null,
+        is_profile_displayed:false,
+        phone:null,
+        email:userEmail,
+        aboutMe:"Please input intro.",
+        hobbies:"Please input hobbies.",
+        major:"Please input major.",
+        prefs:"Please input roommate preferences.",
+        password:password
+    };
+
+    try{
+        await UploadUser(profiledata)
+        .then(res => {
+            console.log("res:",res)
+            
+        })
+    }catch(error){
+        console.log(error)
+        return null
+    }
+    return profiledata
 }
