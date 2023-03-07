@@ -115,8 +115,7 @@ http://localhost:8000/auth/invalidate-sessions
 curl -H "Authorization: Bearer <token>" -X POST -d "client_id=<client_id>" http://localhost:8000/auth/invalidate-sessions
 ```
 
-<!--
-### url = '/api/user' [GET all users, POST one user]
+### url = '/api/user/' [GET all users]
 
 #### Example GET 
 ```
@@ -124,47 +123,38 @@ response = client.get(url)
 response.content
 ```
 
-#### Example POST 
- ```
-import json
-data = {
-	"_id": "d3ffd299b2d6a0131f530809",
-	"display_name": "Helly",
-	"is_profile_displayed": False,
-	"social_info": json.dumps({
-		"phone": "8581234567",
-		"email": "hello@gmail.com"
-	})
-}
-response = client.post(url, data=data)
-``` 
-*Note* that ```_id``` does not have to be provided for POST requests.
+### url = '/api/user/<str:id>/' [GET one user by id]
 
+### url = '/profile/' [GET, PUT, DEL] - current logged in user profile
 
-### url = '/api/user/<str:id>' [By id, GET one user, PUT one user, DEL one user]
+url = '/profile/' to GET current logged in user profile
 
 #### Example PUT request 
 ```
 import json
-url = '/api/user/d3ffd299b2d6a0131f530809'
+url = '/profile/'
 data = {
-	"_id": "d3ffd299b2d6a0131f530809",
-	"display_name": "Melly",
-	"is_profile_displayed": False,
-	"social_info": json.dumps({
-		"phone": "8581234567",
-		"email": "hello@gmail.com"
-	})
+    "email": "poojaganesh98@gmail.com",
+    "username": "cse210",
+    "profile": {
+        "intro": "hi",
+        "clubs": null,
+        "hobbies": "dance",
+        "prefs": null,
+        "more": null,
+        "phone": null,
+        "insta": null,
+        "whatsapp": null
+    }
 }
 response = client.put(url, data=data, content_type='application/json')
 ```
 
 #### Example DELETE request 
 ```
-url = '/api/user/d3ffd299b2d6a0131f530809'
+url = '/profile/'
 response = client.delete(url)
 ```
--->
 
 ## Endpoints for Property collection
 

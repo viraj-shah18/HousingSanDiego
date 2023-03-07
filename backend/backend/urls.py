@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework_social_auth.google import GoogleLogin
 from users.views import CustomUserCreate
 
 # specify URL Path for rest_framework
@@ -24,4 +23,5 @@ urlpatterns = [
     path('auth/', include('drf_social_oauth2.urls', namespace='drf')),
     path('register/', CustomUserCreate.as_view(), name="register_user"),
     path('', include('HousingApp.urls')), # include urls from HousingApp/
+    path('', include('users.urls')),
 ]

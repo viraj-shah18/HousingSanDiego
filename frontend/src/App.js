@@ -66,7 +66,12 @@ function App(props) {
   };
   const handleOpenUserMenu = (event) => {
     console.log("openusermenu");
-    setAnchorElUser(event.currentTarget);
+    if(!location.state){
+      navigate("/login");
+    }else{
+      setAnchorElUser(event.currentTarget);
+    }
+    
   };
 
   const handleCloseNavMenu = () => {
@@ -87,6 +92,9 @@ function App(props) {
     else if(option == 'Profile'){
       console.log(location.state)
       navigate("/profile",{state:location.state});
+    }
+    else if(option == 'Logout'){
+      navigate("/")
     }
 
   };
