@@ -257,15 +257,15 @@ const itemData = [
                 </Typography> */}
                 {/* username textarea (required)*/}
                 <Typography variant="h3" gutterBottom align='center' >
-                    {editMode ? <TextField
+                    {/* {editMode ? <TextField
                                     required
                                     id="outlined-required"
                                     label="Required"
                                     defaultValue={userName}
                                     onChange={(event) => setUserName(event.target.value)}
                                     /> : <text>{userName}</text>
-                                    }
-                    
+                                    } */}
+                    <text>{userName}</text>
                 </Typography>
                 {missUserName?
                                 <Typography variant="h6" gutterBottom align='center' >
