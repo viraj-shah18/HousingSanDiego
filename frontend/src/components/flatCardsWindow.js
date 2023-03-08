@@ -18,7 +18,7 @@ export default class Cards extends Component {
     // Get request to backend: It hits Django backedn and the text after search/ is the search query with _ instead of spaces
     axios.get("http://127.0.0.1:8000/api/property/search/" + this.props.search_query.replace(/ /g,"_") )
     .then( (response) => {
-      console.log("DidMount: ", response)
+      // console.log("DidMount: ", response)
       // Get array of coordinates
       var data = response.data.list
       var coordinates = []
@@ -35,7 +35,7 @@ export default class Cards extends Component {
           }
         )
       }
-      console.log("DidMount-coord: ", coordinates)
+      // console.log("DidMount-coord: ", coordinates)
 
       this.setState({
         flats: response.data.list,
@@ -58,10 +58,10 @@ export default class Cards extends Component {
   }
 
   render()  {
-        console.log("this.state.flats" + this.state.flats)
+        // console.log("this.state.flats" + this.state.flats)
         return (
           <>
-          <div class="row">
+          <div className="row">
           <div className="left-pane-search">
             {
               this.state.flats.map(
@@ -91,7 +91,6 @@ export default class Cards extends Component {
           </div>
           {/* <div className="right-pane-search">     */}
           <div>
-            {console.log("this.state.coords: test ", this.state.coords)}
             <LaJollaMap marks={this.state.coords}/>
           </div>
 
