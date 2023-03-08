@@ -8,6 +8,8 @@ import house2 from "../imgs/nuevo-east.jpg";
 import CardItem from './card';
 import LaJollaMap from './map'; 
 import axios from 'axios';
+import PropertyPopup from './propertyPopup'
+
 
 const default_flat_list = [{"property": {
                                         "_id": "1", 
@@ -71,6 +73,7 @@ export default class Cards extends Component {
         console.log(error);
         this.setState({
           flats: default_flat_list,
+          // coords:  []
           coords: [{
             latitude: 32.866220000000000,
             longitude: -117.226360000000000,
@@ -109,19 +112,21 @@ export default class Cards extends Component {
                 //                               btn_txt={"Show"} img={house1}/> 
                 // )
                 <CardItem title={flat.property.name} 
-                          short_desc={flat.property.desc} 
+                          // short_desc={flat.property.desc} 
                           details={"Price: $"+flat.property.cost+
                                    " Distance: "+flat.miles.toFixed(2)+" miles."+
                                    " Beds: "+flat.property.num_bedrooms+
                                    " Bathrooms: "+ flat.property.num_bathrooms
                                   }
                           btn_txt={"Show"} 
-                          img={flat.property.img_id ? require("../imgs/"+flat.property.img_id): require("../imgs/house1.jpg") }/> 
+                          img={flat.property.img_id ? require("../imgs/"+flat.property.img_id): require("../imgs/house1.jpg") }
+
+                          btn_comp= {<PropertyPopup miles={flat.miles} data={flat.property} />} //This is the popup component that shows the "SHOW MORE" button
+                        
+                        /> 
                 )
               )
-            }            
-            {/* <CardItem title={"Aparment X"} short_desc={"miles:"} btn_txt={"Show"} img={house1}/> */}
-            {/* <CardItem title={"Aparment Z"} short_desc={"Some quick description for property..."} btn_txt={"Show"} img={house2}/> */}
+            }                        
           </div>
           {/* <div className="right-pane-search">     */}
           <div>

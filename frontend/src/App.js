@@ -3,6 +3,7 @@ import HomePage from './components/homePage';
 import CollectionPage from './components/collectionList';
 import ProfilePage from './components/profilePage';
 import SearchPage from './components/searchPage';
+import PropertyPopup from './components/propertyPopup'
 import FindRoommate from './components/findRoommate';
 import LaJollaMap from './components/map'; //testing
 import Cards from './components/flatCardsWindow'; //testing
@@ -223,6 +224,8 @@ function App(props) {
           <Route path="/find-roommate" element={<FindRoommate />} />   
           <Route path="/map" element={<LaJollaMap />} /> 
           <Route path="/cards" element={<Cards />} />   
+          <Route path="/popup" element={<PropertyPopup />} />   
+          
       </Routes>
     </div>
   );
