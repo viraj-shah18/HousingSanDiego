@@ -95,8 +95,8 @@ function SearchPage() {
         <div className="searchbar-searchpage" >
           {/* <SearchBar keyPress={(e) => e.keyCode == 13 ? setQuery({ query: e.target.value}) : null} default_text={location.state.query}/> */}
           <SearchBar keyPress={(e) => keyPress(e,setQuery)} default_text={location.state.query}/>
-          {/* <Cards search_query={location.state.query}/> */}
-          <Cards search_query={query}/>
+          <Cards search_query={location.state.query}/>
+          {/* <Cards search_query={query}/> */}
          </div>
          
 

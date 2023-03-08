@@ -37,11 +37,23 @@ const default_flat_list = [{"property": {
 
 export default class Cards extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state ={
+      flats: [],
+      coords: []
+      //componentDidMount_run: false
 
+    }
+  }
+  // runs one time when rendered
   componentDidMount(){
-    console.log("search_query: "+ this.props.search_query.replace(/ /g,"_"))
+    console.log("Cards- didMount")
+    // console.log("search_query: "+ this.props.search_query.replace(/ /g,"_"))
     // Get request to backend: It hits Django backedn and the text after search/ is the search query with _ instead of spaces
-    const url_ = "http://127.0.0.1:8000/api/property/search/" + this.props.search_query ? this.props.search_query.replace(/ /g,"_") : "UC_San_Diego"
+    const search_url_part = this.props.search_query ? this.props.search_query.replace(/ /g,"_") : "UC_San_Diego"
+    const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
+    console.log("url_: "+ url_)
     axios.get(url_)
     .then( (response) => {
       console.log("DidMount: ", response)
@@ -57,8 +69,7 @@ export default class Cards extends Component {
           {
             latitude: lat,
             longitude: long,
-            name:property_name
-
+            name:property_name            
           }
         )
       }
@@ -66,7 +77,10 @@ export default class Cards extends Component {
 
       this.setState({
         flats: response.data.list,
-        coords: coordinates
+        coords: coordinates,
+        search_query: this.props.search_query, // to keep track of updated search
+        componentDidMount_run: true // to keep track of firs time the page is loaded, otherwise shouldUpdate thinks it's the same query and does not update
+
       });
     })
     .catch( (error) => {
@@ -84,14 +98,148 @@ export default class Cards extends Component {
 
   }
 
-  constructor(props) {
-      super(props);
-      this.state ={
-        flats: [],
-        coords: []
-      }
-      
+  // runs every time before rendering
+  // static getDerivedStateFromProps(props, state) {
+
+  //   if(props.search_query !== state.search_query){
+  //       //Change in props
+  //       console.log("[getDerivedStateFromProps]")
+  //       console.log("[state.search_query]"+ state.search_query)
+  //       console.log("[props.search_query]"+ props.search_query)
+
+  //       // ---------- GET NEW LIST OF FLATS ---------------
+  //       const search_url_part = props.search_query ? props.search_query.replace(/ /g,"_") : "UC_San_Diego"
+  //       const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
+
+  //       axios.get(url_)
+  //       .then( (response) => {
+  //         console.log("DidMount: ", response)
+  //         // Get array of coordinates
+  //         var data = response.data.list
+  //         var coordinates = []
+  //         var i ;
+  //         for(i=0; i < data.length; i++){
+  //           var lat = data[i].property.latitude
+  //           var long = data[i].property.longitude
+  //           var property_name = data[i].property.name
+  //           coordinates.push(
+  //             {
+  //               latitude: lat,
+  //               longitude: long,
+  //               name:property_name
+    
+  //             }
+  //           )
+  //         }
+  //         // console.log("DidMount-coord: ", coordinates)
+    
+  //         return {
+  //           flats: response.data.list,
+  //           coords: coordinates,
+  //           search_query: props.search_query // to keep track of updated search
+  //         };
+  //       })
+  //       .catch( (error) => {
+  //           console.log(error);
+  //           return{
+  //             flats: default_flat_list,
+  //             // coords:  []
+  //             coords: [{
+  //               latitude: 32.866220000000000,
+  //               longitude: -117.226360000000000,
+  //               name:"test"
+  //             }]
+  //           };
+  //       });
+  //       // ------------------------------------------------
+  //       return{          
+  //         search_query: props.search_query
+  //       };
+  //   }
+  //   return null; // No change to state
+  // }
+
+  // compares current state and next, if query is changed, then it updates state (this) and then returns true meaning that it should re render
+  shouldComponentUpdate(nextProps, nextState) {
+    // Rendering the component only if 
+    // passed props value is changed
+    console.log("[shouldUpdate]")
+    console.log("nextProps.search_query: ", nextProps.search_query )
+    console.log("this.props.search_queryy: ", this.props.search_query )
+    console.log("nextState: ", nextState )
+
+    if (nextState.componentDidMount_run) {
+      console.log("[nextState.componentDidMount_run] " + nextState.componentDidMount_run)
+      this.setState({componentDidMount_run: false});
+      return true
+    }
+
+    if (nextProps.search_query !== this.props.search_query) {
+
+      // reset flag? 
+      // this.setState({componentDidMount_run: false});
+
+      // ---------- GET NEW LIST OF FLATS ---------------
+      const search_url_part = nextProps.search_query ? nextProps.search_query.replace(/ /g,"_") : "UC_San_Diego"
+      const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
+      console.log("url_: "+ url_)
+      axios.get(url_)
+      .then( (response) => {
+        console.log("Updating!", response)
+        // Get array of coordinates
+        var data = response.data.list
+        var coordinates = []
+        var i ;
+        for(i=0; i < data.length; i++){
+          var lat = data[i].property.latitude
+          var long = data[i].property.longitude
+          var property_name = data[i].property.name
+          coordinates.push(
+            {
+              latitude: lat,
+              longitude: long,
+              name:property_name
+  
+            }
+          )
+        }
+        // console.log("DidMount-coord: ", coordinates)
+  
+        this.setState({
+          flats: response.data.list,
+          coords: coordinates,
+          search_query: nextProps.search_query, // to keep track of updated search
+          componentDidMount_run: false 
+        });
+      })
+      .catch( (error) => {
+          console.log(error);
+          this.setState({
+            flats: default_flat_list,
+            // coords:  []
+            coords: [{
+              latitude: 32.866220000000000,
+              longitude: -117.226360000000000,
+              name:"test"
+            }],
+            componentDidMount_run: false
+          });
+      });
+      // ------------------------------------------------
+
+      return true;
+    } 
+    // else if (nextState.componentDidMount_run){
+    //   return true;
+    // }
+    else {
+      return false;
+    }
   }
+
+
+      
+  
 
   render()  {
         // console.log("this.state.flats" + this.state.flats)
