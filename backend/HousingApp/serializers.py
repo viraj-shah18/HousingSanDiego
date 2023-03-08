@@ -24,7 +24,14 @@ class PropertySerializer(serializers.ModelSerializer):
         # fields = ('_id', 'name', 'cost', 'address', 'latitude', 'longitude', 'desc', 'contact_info', 
         #             'num_bedrooms', 'num_bathrooms')
 
+class PropertyIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertyId
+        fields = '__all__'
+
 class CollectionSerializer(serializers.ModelSerializer):
+    properties_list = serializers.ListField(child=PropertyIdSerializer())
+
     class Meta:
         model = Collection
         fields = '__all__'

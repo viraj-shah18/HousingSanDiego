@@ -138,6 +138,63 @@ The list is sorted by the "miles" field in ascending order.
 
 Make sure to see the note under the top-level Endpoints section about lists in this API.
 
+## Endpoints for Collection collection
+
+## url = '/api/user_collection/<str:user_id>' [POST a new collection, DELETE a collection from a user's list of collections]
+
+#### Example POST request
+
+```
+url = '/api/user_collection/b3ffd299b2d6a0131f530819'
+data = {
+	"name": "11 Bedroom homes near Ralphs",
+	"desc": "11 bedroom homes I found with Sam all under $2000 a month"
+}
+response = client.post(url, data=data, content_type='application/json')
+```
+
+Response Json is the data of the updated collections list of the particular user.
+
+#### Example DELETE request
+
+Pass in the ```_id``` of an existing collection under this user.
+
+```
+url = '/api/user_collection/b3ffd299b2d6a0131f530819'
+data = {
+	"_id": "6407269061706e0f5562ac6f"
+}
+response = client.delete(url, data=data, content_type='application/json')
+```
+
+Response Json is the data of the updated collections list of the particular user.
+
+## url = '/api/user_collection/<str:user_id>' [POST a new collection, DELETE a collection from a user's list of collections]
+
+#### Example GET request
+```
+url = '/api/collection/6407c9e145e206cca1ae9280'
+response = client.get(url)
+response.content
+```
+
+#### Example PUT request
+```
+import json
+url = '/api/collection/6407c9e145e206cca1ae9280'
+data = {
+	"_id": "6407c9e145e206cca1ae9280",
+	"name": "Changed collection name",
+	"desc": "Changed description",
+	"properties_list": [
+		{"_id": "6401d184c8c38ac865d64b76"}
+	]
+}
+response = client.put(url, data=data, content_type='application/json')
+```
+
+
+	
 # Testing the Endpoints with Python
 
 To test any new endpoints/views you write through the Python shell:

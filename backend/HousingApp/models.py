@@ -1,5 +1,5 @@
 from djongo import models
-from django.db.models import ImageField
+from django.db.models import ImageField, ManyToManyField
 #from django.db import models
 
 
@@ -49,45 +49,18 @@ class Address(models.Model):
 	class Meta:
 		abstract = True
 
-class Collection_Object(models.Model):
-	property_id = models.ObjectIdField() # foreign key
-	desc: str = models.CharField(max_length=120, blank=True, null=True)
+# class Collection_Object(models.Model):
+# 	property_id = models.ObjectIdField() # foreign key
+# 	desc: str = models.CharField(max_length=120, blank=True, null=True)
 
-	@property
-	def property_ref(self):
-		return Property.objects.get(id=self.property_id)
+# 	@property
+# 	def property_ref(self):
+# 		return Property.objects.get(id=self.property_id)
 
-	class Meta:
-		abstract = True
+# 	class Meta:
+# 		abstract = True
 # End Sub-models =======================================
 
-
-class Collection(models.Model):
-	_id: str = models.ObjectIdField(primary_key=True)
-	name: str = models.CharField(max_length=32)
-	desc: str = models.CharField(max_length=120, blank=True, null=True)
-	properties_list = models.EmbeddedField(model_container=Collection_Object, blank=True, null=True)
-	
-class User(models.Model):
-	_id: str = models.ObjectIdField(primary_key=True)
-	display_name: str = models.CharField(max_length=32)
-	is_profile_displayed = models.BooleanField()
-	profile_info = models.EmbeddedField(model_container=Profile_Info, blank=True, null=True)
-	social_info = models.EmbeddedField(model_container=Social_Info, blank=True, null=True)
-
-	# friends = models.ArrayField(
-	# 	model_container=Friend, # sub doc
-	# 	blank=True, 
-    #     null=True,
-	# 	default=list()
-    # )
-	# collections =  models.ArrayField(
-    #     model_container=Collection, # foreign key
-    #     blank=True,
-	# 	null=True,
-	# 	default=list()
-    # )
-	
 class Property(models.Model):
 	_id: str = models.ObjectIdField(primary_key=True)
 	name: str = models.CharField(max_length=32)
@@ -102,6 +75,57 @@ class Property(models.Model):
 	contact_info = models.EmbeddedField(model_container=Social_Info)
 	# https://medium.com/@tech-learner/upload-images-in-database-using-django-dc652941122b
 	#images = models.ArrayField(ImageField(upload_to='images/', default=None))
+
+class PropertyId(models.Model):
+	_id: str = models.ObjectIdField()	
+	class Meta:
+		abstract = True
+
+class Collection(models.Model):
+	_id: str = models.ObjectIdField(primary_key=True)
+	name: str = models.CharField(max_length=32)
+	desc: str = models.CharField(max_length=120, blank=True, null=True)
+	properties_list = models.ArrayField(
+        model_container=PropertyId, # foreign key (obj id) to Property 
+        blank=True,
+		null=True,
+		default=list()
+    )
+	# properties_list =  models.ArrayReferenceField(
+    #     to=Property,
+    #     on_delete=models.CASCADE,
+    #     blank=True,
+	# 	null=True
+    # )
+
+	
+class User(models.Model):
+	_id: str = models.ObjectIdField(primary_key=True)
+	display_name: str = models.CharField(max_length=32)
+	is_profile_displayed = models.BooleanField()
+	profile_info = models.EmbeddedField(model_container=Profile_Info, blank=True, null=True)
+	social_info = models.EmbeddedField(model_container=Social_Info, blank=True, null=True)
+
+	# friends = models.ArrayField(
+	# 	model_container=Friend, # sub-doc
+	# 	blank=True, 
+    #     null=True,
+	# 	default=list()
+    # )
+	collections =  models.ArrayField(
+        model_container=Collection, # foreign key (obj id) to Collection 
+        blank=True,
+		null=True,
+		default=list()
+    )
+	# collections =  models.ArrayReferenceField(
+    #     to=Collection,
+    #     on_delete=models.CASCADE,
+    #     blank=True,
+	# 	null=True
+    # )
+	# collections = models.ManyToManyField(Collection, blank=True, null=True)
+
 	
 	
 
