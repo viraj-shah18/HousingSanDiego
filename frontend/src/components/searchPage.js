@@ -66,9 +66,9 @@ function SearchPage() {
     const location = useLocation(); 
     const navigate = useNavigate();
 
-    const [query, setQuery] = useState(location.state.query);
+    const [query, setQuery] = useState(location.state.query); // Is setQuery being used properly? double check
 
-    function keyPress(e){      
+    function keyPress(e, setQuery){      
         // 13 refers to Enter key 
         if(e.keyCode == 13){
             // when Enter is pressed, refresh Flat Component
@@ -79,11 +79,11 @@ function SearchPage() {
           setQuery({ query: e.target.value}) 
           console.log("query [2]: ", query)
 
-          navigate(location.pathname, {state: {
-                                                  query: e.target.value, //pass search query into state.query prop
-                                              },
-                                            });
-
+          // navigate(location.pathname, {state: {
+          //                                         query: e.target.value, //pass search query into state.query prop
+          //                                     },
+          //                                   });
+          // navigate(0);
         //   navigate(0, {
         //     state: {
         //         query: e.target.value, //pass search query into state.query prop
@@ -93,7 +93,8 @@ function SearchPage() {
       }    
     return (
         <div className="searchbar-searchpage" >
-          <SearchBar keyPress={keyPress} default_text={location.state.query}/>
+          {/* <SearchBar keyPress={(e) => e.keyCode == 13 ? setQuery({ query: e.target.value}) : null} default_text={location.state.query}/> */}
+          <SearchBar keyPress={(e) => keyPress(e,setQuery)} default_text={location.state.query}/>
           {/* <Cards search_query={location.state.query}/> */}
           <Cards search_query={query}/>
          </div>
