@@ -89,17 +89,25 @@ class User(models.Model):
     # )
 	
 class Property(models.Model):
-	_id: str = models.ObjectIdField(primary_key=True)
-	name: str = models.CharField(max_length=32)
-	cost: str = models.CharField(max_length=20)
-	address: str = models.EmbeddedField(model_container=Address)
-	latitude: float = models.DecimalField(decimal_places=15, max_digits=20)
-	longitude: float = models.DecimalField(decimal_places=15, max_digits=20)
-	num_bedrooms: int = models.PositiveIntegerField()
-	num_bathrooms: int = models.PositiveIntegerField()
+    _id: str = models.ObjectIdField(primary_key=True)
+    name: str = models.CharField(max_length=32)
+    cost: str = models.CharField(max_length=20)
+    address: str = models.EmbeddedField(model_container=Address)
+    latitude: float = models.DecimalField(decimal_places=15, max_digits=20)
+    longitude: float = models.DecimalField(decimal_places=15, max_digits=20)
+    num_bedrooms: int = models.PositiveIntegerField()
+    num_bathrooms: int = models.PositiveIntegerField()
 
-	desc: str = models.CharField(max_length=1000)
-	contact_info = models.EmbeddedField(model_container=Social_Info)
+    street_address: str = models.CharField(max_length=30)
+    secondary_street_address: str = models.CharField(max_length=30, blank=True, null=True)
+    city: str = models.CharField(max_length=20)
+    state: str = models.CharField(max_length=2)
+    zipcode: int = models.PositiveIntegerField()
+    
+    img_id: str = models.CharField(max_length=100)
+
+    desc: str = models.CharField(max_length=1000)
+    contact_info = models.EmbeddedField(model_container=Social_Info)
 	# https://medium.com/@tech-learner/upload-images-in-database-using-django-dc652941122b
 	#images = models.ArrayField(ImageField(upload_to='images/', default=None))
 	

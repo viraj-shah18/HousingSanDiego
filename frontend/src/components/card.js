@@ -8,7 +8,7 @@ import {
   } from 'mdb-react-ui-kit';
 
 
-export default function CardItem({title, short_desc, btn_txt, img }) {
+export default function CardItem({title, short_desc, btn_txt, img , details="" }) {
     // Single card component, img is imported as 'import house2 from "../imgs/nuevo-east.jpg";' 
     return (      
       <MDBCard className='card'>
@@ -18,6 +18,10 @@ export default function CardItem({title, short_desc, btn_txt, img }) {
           <MDBCardText>
             {short_desc}
           </MDBCardText>
+          <MDBCardText style={{ fontWeight: 'bold' }}>
+            {details}
+          </MDBCardText>
+            
           <MDBBtn href='#'>{btn_txt}</MDBBtn>
         </MDBCardBody>
       </MDBCard>    

@@ -21,7 +21,7 @@ function SearchPage() {
     return (
         <div className="searchbar-searchpage" >
           <SearchBar keyPress={keyPress} default_text={location.state.query}/>
-          <Cards />
+          <Cards search_query={location.state.query}/>
          </div>
          
 
