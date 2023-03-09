@@ -9,6 +9,7 @@ import CardItem from './card';
 import LaJollaMap from './map'; 
 import axios from 'axios';
 import PropertyPopup from './propertyPopup'
+import user_login_data from '../keys/upass.json'
 
 // Used for testing when backend is not working
 const default_flat_list = [{"property": {
@@ -35,6 +36,7 @@ const default_flat_list = [{"property": {
                                         "contact_info": null
                                       }, "miles": 0.8825049502283719}]
 
+
 export default class Cards extends Component {
   // This component displays a two column screen. Left column contains a vertical sequence of CardItem components and the right side shows a map centered in La Jolla. 
   // These components are integrated with the backend and axios.get() is used to retrived data from search queries. Search query is expecte to come as a prop. 
@@ -57,7 +59,9 @@ export default class Cards extends Component {
     const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
     console.log("url_: "+ url_)
     // this.setState({componentDidMount_run: true});
-    axios.get(url_)
+    console.log("login info: ", user_login_data)
+    
+    axios.get(url_, {auth: user_login_data})
     .then( (response) => {
       console.log("DidMount: ", response)
       // Get array of coordinates
