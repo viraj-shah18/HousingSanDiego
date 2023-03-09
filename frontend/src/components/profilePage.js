@@ -25,6 +25,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {useNavigate,useLocation} from 'react-router-dom';
 import {UploadUser} from './api';
 
+
 const editIconStyle = {
     margin: 0,
     top: '20',
@@ -427,7 +428,6 @@ const itemData = [
                             </div>
                         ))}
                     </ImageList>
-                    
                 </Typography>
 
                 </Paper>

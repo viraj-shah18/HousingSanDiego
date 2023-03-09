@@ -166,3 +166,36 @@ export async function CreateUser(userId,userEmail,password) {
     }
     return profiledata
 }
+
+export async function GoogleLoginAPI (token){
+    let googleData,userData
+    try {
+        await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: 'application/json'
+                }
+            })
+            .then((res) => {
+                console.log("axiosres:",res.data.id,res.data.email)
+                googleData = res.data
+            }).catch((err) => console.log(err));
+    }catch(error){
+        console.log(error)
+        return null;
+    }
+    console.log("googleData",googleData)
+    try {
+        userData = await CreateUser(googleData.id,googleData.email,googleData.id)
+    }catch(error){
+        console.log(error)
+        return null;
+    }
+    try {
+        userData = await FetchUser(googleData.id,googleData.id)
+    }catch(error){
+        console.log(error)
+        return null;
+    }
+    return userData
+}
