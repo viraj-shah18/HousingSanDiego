@@ -60,8 +60,62 @@ There will be three types of endpoints for our three different collections in Mo
 
 Here, I detail all of our endpoints as well as provide the Python code I tested them with. 
 Please use these to help write your requests.
+#### Example POST 
+POST http://localhost:8000/register/
+ ```
+  "Request Body": {
+    "name": "Custom User Create",
+    "description": "",
+    renders: "["application/json", "text/html"]"
+parses: "[
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ]"
+    "Media type": "application/json",
+    "email": "some-valid-email",
+    "password": "give_a_password",
+    "username": "give_a_username"
+  },
+  "Response Headers": {
+    "content-type": "application/json",
+  },
+  "Response Body": "{"email":"some-valid-email","username":"give_a_username"}"
+}
+ ```
 
-### url = '/api/user' [GET all users, POST one user]
+#### Google OAuth login
+http://localhost:8000/auth/token
+
+Retrieve a token for a user using curl:
+
+```
+curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&grant_type=password&username=<user_name>&password=<password>" http://localhost:8000/auth/token
+
+```
+<client_id> and <client_secret> are the keys in the backend/backend/keys/key.py
+
+Refresh token:
+```
+curl -X POST -d "grant_type=refresh_token&client_id=<client_id>&client_secret=<client_secret>&refresh_token=<your_refresh_token>" http://localhost:8000/auth/token
+```
+Revoke tokens:
+
+Revoke a single token:
+http://localhost:8000/auth/revoke-token
+
+```
+curl -X POST -d "client_id=<client_id>&client_secret=<client_secret>&token=<your_token>" http://localhost:8000/auth/revoke-token
+```
+
+Revoke all tokens for a user:
+http://localhost:8000/auth/invalidate-sessions
+
+```
+curl -H "Authorization: Bearer <token>" -X POST -d "client_id=<client_id>" http://localhost:8000/auth/invalidate-sessions
+```
+
+### url = '/api/user/' [GET all users]
 
 #### Example GET 
 ```
@@ -69,43 +123,36 @@ response = client.get(url)
 response.content
 ```
 
-#### Example POST 
-```
-import json
-data = {
-	"_id": "d3ffd299b2d6a0131f530809",
-	"display_name": "Helly",
-	"is_profile_displayed": False,
-	"social_info": json.dumps({
-		"phone": "8581234567",
-		"email": "hello@gmail.com"
-	})
-}
-response = client.post(url, data=data)
-```
-*Note* that ```_id``` does not have to be provided for POST requests.
+### url = '/api/user/<str:id>/' [GET one user by id]
 
-### url = '/api/user/<str:id>' [By id, GET one user, PUT one user, DEL one user]
+### url = '/profile/' [GET, PUT, DEL] - current logged in user profile
+
+url = '/profile/' to GET current logged in user profile
 
 #### Example PUT request 
 ```
 import json
-url = '/api/user/d3ffd299b2d6a0131f530809'
+url = '/profile/'
 data = {
-	"_id": "d3ffd299b2d6a0131f530809",
-	"display_name": "Melly",
-	"is_profile_displayed": False,
-	"social_info": json.dumps({
-		"phone": "8581234567",
-		"email": "hello@gmail.com"
-	})
+    "email": "poojaganesh98@gmail.com",
+    "username": "cse210",
+    "profile": {
+        "intro": "hi",
+        "clubs": null,
+        "hobbies": "dance",
+        "prefs": null,
+        "more": null,
+        "phone": null,
+        "insta": null,
+        "whatsapp": null
+    }
 }
 response = client.put(url, data=data, content_type='application/json')
 ```
 
 #### Example DELETE request 
 ```
-url = '/api/user/d3ffd299b2d6a0131f530809'
+url = '/profile/'
 response = client.delete(url)
 ```
 

@@ -5,6 +5,8 @@ import ProfilePage from './components/profilePage';
 import SearchPage from './components/searchPage';
 import PropertyPopup from './components/propertyPopup'
 import FindRoommate from './components/findRoommate';
+import LoginPage from './components/loginPage';
+import Cards from  './components/flatCardsWindow';
 import LaJollaMap from './components/map'; //testing
 import Cards from './components/flatCardsWindow'; //testing
 import AppBar from '@mui/material/AppBar';
@@ -22,7 +24,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import PeopleIcon from '@mui/icons-material/People';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate,useLocation} from 'react-router-dom';
+
 import {
   Routes,
   Route,
@@ -48,10 +51,9 @@ const settings = ['Profile', 'Logout'];
 
 function App(props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [isLogin, setIsLogin] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [curPage,setCurPage] = React.useState('Home');
 
   const handleNavigation = (gotoPage) => {
     console.log(gotoPage.name);
@@ -66,7 +68,12 @@ function App(props) {
   };
   const handleOpenUserMenu = (event) => {
     console.log("openusermenu");
-    setAnchorElUser(event.currentTarget);
+    if(!location.state){
+      navigate("/login");
+    }else{
+      setAnchorElUser(event.currentTarget);
+    }
+    
   };
 
   const handleCloseNavMenu = () => {
@@ -80,8 +87,16 @@ function App(props) {
   const handleClickUserOptions = (option) => {
     setAnchorElUser(null);
     console.log(option)
-    if(option == 'Profile'){
-      navigate("/profile");
+    console.log("need login before visit profile",location)
+    if(!location.state){
+      navigate("/login");
+    }
+    else if(option == 'Profile'){
+      console.log(location.state)
+      navigate("/profile",{state:location.state});
+    }
+    else if(option == 'Logout'){
+      navigate("/")
     }
 
   };
@@ -219,6 +234,7 @@ function App(props) {
     <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/collections" element={<CollectionPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/find-roommate" element={<FindRoommate />} />   

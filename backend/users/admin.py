@@ -1,8 +1,6 @@
 from django.contrib import admin
+from .models import Profile
 
 # Register your models here.
-from .models import *
-
 #admin.site.register(User)
-admin.site.register(Property)
-admin.site.register(Collection)
+admin.site.register(Profile)
