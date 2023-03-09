@@ -23,7 +23,8 @@ const style = {
 };
 
 export default function PropertyPopup ({miles=999, data = {name:"test title", desc:"This is a description", img_id: "house1.jpg"}}) {
-
+    // POPUP for property 
+    
     const [open, setOpen] = React.useState(false);    
     console.log("PropertyPopup" +data);
     const handleOpen = () => setOpen(true);

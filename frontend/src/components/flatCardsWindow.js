@@ -10,7 +10,7 @@ import LaJollaMap from './map';
 import axios from 'axios';
 import PropertyPopup from './propertyPopup'
 
-
+// Used for testing when backend is not working
 const default_flat_list = [{"property": {
                                         "_id": "1", 
                                         "name": "Mirada at La Jolla Colony Apartments[test]", 
@@ -36,6 +36,8 @@ const default_flat_list = [{"property": {
                                       }, "miles": 0.8825049502283719}]
 
 export default class Cards extends Component {
+  // This component displays a two column screen. Left column contains a vertical sequence of CardItem components and the right side shows a map centered in La Jolla. 
+  // These components are integrated with the backend and axios.get() is used to retrived data from search queries. Search query is expecte to come as a prop. 
 
   constructor(props) {
     super(props);
@@ -46,7 +48,7 @@ export default class Cards extends Component {
 
     }
   }
-  // runs one time when rendered
+  // runs one time when rendered first time
   componentDidMount(){
     console.log("Cards- didMount")
     // console.log("search_query: "+ this.props.search_query.replace(/ /g,"_"))
@@ -54,6 +56,7 @@ export default class Cards extends Component {
     const search_url_part = this.props.search_query ? this.props.search_query.replace(/ /g,"_") : "UC_San_Diego"
     const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
     console.log("url_: "+ url_)
+    // this.setState({componentDidMount_run: true});
     axios.get(url_)
     .then( (response) => {
       console.log("DidMount: ", response)
@@ -98,91 +101,39 @@ export default class Cards extends Component {
 
   }
 
-  // runs every time before rendering
-  // static getDerivedStateFromProps(props, state) {
-
-  //   if(props.search_query !== state.search_query){
-  //       //Change in props
-  //       console.log("[getDerivedStateFromProps]")
-  //       console.log("[state.search_query]"+ state.search_query)
-  //       console.log("[props.search_query]"+ props.search_query)
-
-  //       // ---------- GET NEW LIST OF FLATS ---------------
-  //       const search_url_part = props.search_query ? props.search_query.replace(/ /g,"_") : "UC_San_Diego"
-  //       const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
-
-  //       axios.get(url_)
-  //       .then( (response) => {
-  //         console.log("DidMount: ", response)
-  //         // Get array of coordinates
-  //         var data = response.data.list
-  //         var coordinates = []
-  //         var i ;
-  //         for(i=0; i < data.length; i++){
-  //           var lat = data[i].property.latitude
-  //           var long = data[i].property.longitude
-  //           var property_name = data[i].property.name
-  //           coordinates.push(
-  //             {
-  //               latitude: lat,
-  //               longitude: long,
-  //               name:property_name
-    
-  //             }
-  //           )
-  //         }
-  //         // console.log("DidMount-coord: ", coordinates)
-    
-  //         return {
-  //           flats: response.data.list,
-  //           coords: coordinates,
-  //           search_query: props.search_query // to keep track of updated search
-  //         };
-  //       })
-  //       .catch( (error) => {
-  //           console.log(error);
-  //           return{
-  //             flats: default_flat_list,
-  //             // coords:  []
-  //             coords: [{
-  //               latitude: 32.866220000000000,
-  //               longitude: -117.226360000000000,
-  //               name:"test"
-  //             }]
-  //           };
-  //       });
-  //       // ------------------------------------------------
-  //       return{          
-  //         search_query: props.search_query
-  //       };
-  //   }
-  //   return null; // No change to state
-  // }
 
   // compares current state and next, if query is changed, then it updates state (this) and then returns true meaning that it should re render
+  // also when it's coming from the Home page it runs componentDidMount the first time so we check if it has run then don't get data again, just return true and reverse flag. 
   shouldComponentUpdate(nextProps, nextState) {
     // Rendering the component only if 
     // passed props value is changed
     console.log("[shouldUpdate]")
     console.log("nextProps.search_query: ", nextProps.search_query )
     console.log("this.props.search_queryy: ", this.props.search_query )
+    console.log("nextProps.search_query.query: ", nextProps.search_query.query )    //new
+    console.log("this.props.search_query.query: ", this.props.search_query.query )  //new
     console.log("nextState: ", nextState )
+    console.log("this.state: ", this.state )
 
+    // if coming for the first time to the Search page or after resfresh 
     if (nextState.componentDidMount_run) {
       console.log("[nextState.componentDidMount_run] " + nextState.componentDidMount_run)
       this.setState({componentDidMount_run: false});
       return true
     }
 
-    if (nextProps.search_query !== this.props.search_query) {
-
-      // reset flag? 
-      // this.setState({componentDidMount_run: false});
-
+    // if query has changed     
+    if (nextProps.search_query.query !== this.props.search_query.query) { // new
+    // if (nextProps.search_query !== this.props.search_query) {
+    // if (nextState.componentDidMount_run || nextProps.search_query !== this.props.search_query) {  
+      this.setState({componentDidMount_run: false});
       // ---------- GET NEW LIST OF FLATS ---------------
-      const search_url_part = nextProps.search_query ? nextProps.search_query.replace(/ /g,"_") : "UC_San_Diego"
+      //const search_url_part = nextProps.search_query ? nextProps.search_query.replace(/ /g,"_") : "UC_San_Diego"
+      const search_url_part = nextProps.search_query.query ? nextProps.search_query.query.replace(/ /g,"_") : "UC_San_Diego" //new
       const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
+      console.log("[in if]")
       console.log("url_: "+ url_)
+      // GET REQUEST TO THE BACKEND
       axios.get(url_)
       .then( (response) => {
         console.log("Updating!", response)
@@ -202,21 +153,21 @@ export default class Cards extends Component {
   
             }
           )
-        }
-        // console.log("DidMount-coord: ", coordinates)
-  
+        }  
         this.setState({
           flats: response.data.list,
           coords: coordinates,
-          search_query: nextProps.search_query, // to keep track of updated search
+          // search_query: nextProps.search_query, // to keep track of updated search
+          search_query: nextProps.search_query.query , // new
           componentDidMount_run: false 
         });
       })
       .catch( (error) => {
+          console.log("error?");
           console.log(error);
+          // set a test state to show some test cards
           this.setState({
             flats: default_flat_list,
-            // coords:  []
             coords: [{
               latitude: 32.866220000000000,
               longitude: -117.226360000000000,
@@ -229,17 +180,10 @@ export default class Cards extends Component {
 
       return true;
     } 
-    // else if (nextState.componentDidMount_run){
-    //   return true;
-    // }
     else {
       return false;
     }
   }
-
-
-      
-  
 
   render()  {
         // console.log("this.state.flats" + this.state.flats)
@@ -251,14 +195,6 @@ export default class Cards extends Component {
             {
               this.state.flats.map(
                 (flat, index) => (
-                // <CardItem title={"Aparment X"} short_desc=
-                //                               {
-                //                                 "Distance: " + flat.miles + " miles\n" +
-                //                                "Latitude: " + flat.property.latitude + "\n" +
-                //                                "longitude: " + flat.property.longitude + "\n" 
-                //                               } 
-                //                               btn_txt={"Show"} img={house1}/> 
-                // )
                 <CardItem title={flat.property.name} 
                           // short_desc={flat.property.desc} 
                           details={"Price: $"+flat.property.cost+
@@ -276,7 +212,6 @@ export default class Cards extends Component {
               )
             }                        
           </div>
-          {/* <div className="right-pane-search">     */}
           <div>
             <LaJollaMap marks={this.state.coords}/>
           </div>
