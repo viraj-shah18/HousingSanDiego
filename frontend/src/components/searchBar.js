@@ -5,15 +5,14 @@ import "../styles.css";
 
 
 
-function SearchBar({keyPress}){
+function SearchBar({keyPress, default_text="Search"}){
   return  (      
   <div className="search">
   <TextField
     id="outlined-basic"
     variant="outlined"
     fullWidth
-    label="Search"
-
+    label={default_text}
     // onKeyDown={() => keyPress()}
     onKeyDown={keyPress}
   />

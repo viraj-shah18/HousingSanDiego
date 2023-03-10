@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from .keys.key import client_secret, client_id
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,9 @@ SECRET_KEY = "django-insecure-%fz9fft^f8+$m+2g4w&aag2ky0%x-&2jiugjmoht^0g0*jw+5$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+]
 
 
 # Application definition
@@ -40,7 +44,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     'corsheaders',
-    "HousingApp"
+    'HousingApp',
+    'users',
+    # Oauth
+    'oauth2_provider',
+    'social_django',
+    'drf_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +77,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # Oauth
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -123,6 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -130,6 +144,18 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.ObjectIdField"
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',  # enables simple command line authentication
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
+        # django-oauth-toolkit >= 1.0.0
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'drf_social_oauth2.authentication.SocialAuthentication',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_PARSER_CLASSES': (
@@ -138,6 +164,15 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
      )
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+    # drf_social_oauth2
+    'drf_social_oauth2.backends.DjangoOAuth2',
+]
+
+
 
 LOGGING = {
     "version": 1,
@@ -152,3 +187,23 @@ LOGGING = {
         },
     }
 }
+
+CORS_ALLOW_HEADERS = "*"
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8000',
+    'http://localhost:3000',
+)
+
+GOOGLE_CLIENT_ID= client_id
+GOOGLE_CLIENT_SECRET= client_secret
+GOOGLE_REDIRECT_URI= 'properties_list'
+SOCIAL_AUTH_GOOGLE_AUTH_EXTRA_ARGUMENTS = {'fields': 'email'}
+SOCIAL_AUTH_USER_FIELDS = ['email', 'username', 'password']
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
+
+LOGIN_URL='register_user'
+LOGIN_REDIRECT_URL = 'properties_list'
