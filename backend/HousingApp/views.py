@@ -97,7 +97,7 @@ def property_detail(request, id):
 
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
-geolocator = Nominatim(user_agent="HousingApp")
+geolocator = Nominatim(user_agent="HousingApp", timeout=3)
 
 # api/property/search/<str:search_query>
 @api_view(['GET'])

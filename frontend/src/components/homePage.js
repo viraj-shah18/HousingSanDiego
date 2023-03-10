@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useState } from "react";
 import "../styles.css";
 import background from "../imgs/home.jpg";
+
 import {useNavigate,useLocation} from 'react-router-dom';
 import SearchBar from './searchBar';
 

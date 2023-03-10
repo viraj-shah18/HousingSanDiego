@@ -65,6 +65,21 @@
     border-style: groove;     
   }
 
+  .cardimg-popup {
+    /* display: flex;
+    height: 100vh;
+    width: 50%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 20px;
+    color: white;  */
+    width: 60%;
+    height: 50%;
+    border-style: groove;     
+    
+  }
+
+
 .right-pane-search {
     display: flex;
     height: 100vh;
