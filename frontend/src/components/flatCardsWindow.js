@@ -9,7 +9,7 @@ import CardItem from './card';
 import LaJollaMap from './map'; 
 import axios from 'axios';
 import PropertyPopup from './propertyPopup'
-import user_login_data from '../keys/upass.json'
+import {  useLocation } from "react-router-dom";
 
 // Used for testing when backend is not working
 const default_flat_list = [{"property": {
@@ -50,6 +50,8 @@ export default class Cards extends Component {
 
     }
   }
+
+  
   // runs one time when rendered first time
   componentDidMount(){
     console.log("Cards- didMount")
@@ -59,9 +61,10 @@ export default class Cards extends Component {
     const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
     console.log("url_: "+ url_)
     // this.setState({componentDidMount_run: true});
-    console.log("login info: ", user_login_data)
     
-    axios.get(url_, {auth: user_login_data})
+
+    console.log("Auth: " + this.props.auth)
+    axios.get(url_,{auth:this.props.auth})
     .then( (response) => {
       console.log("DidMount: ", response)
       // Get array of coordinates
