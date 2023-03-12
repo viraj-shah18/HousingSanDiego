@@ -63,8 +63,9 @@ export default class Cards extends Component {
     // this.setState({componentDidMount_run: true});
     
 
-    console.log("Auth: " + this.props.auth)
-    axios.get(url_,{auth:this.props.auth})
+    //console.log("Auth: " + this.props.auth)
+    //axios.get(url_,{auth:this.props.auth})
+    axios.get(url_)
     .then( (response) => {
       console.log("DidMount: ", response)
       // Get array of coordinates
