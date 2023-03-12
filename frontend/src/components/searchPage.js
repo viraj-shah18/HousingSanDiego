@@ -9,11 +9,7 @@ function SearchPage() {
 
     // Get params passed through react-router-dom (e.g. search query)
     const location = useLocation(); 
-    console.log("login info: " + location.state.loginInfo)
-    let auth= {
-      'username': location.state.loginInfo.username,
-      'password': location.state.loginInfo.password
-    }
+    
     const [query, setQuery] = useState(location.state.query); // Is setQuery being used properly? double check
 
     function keyPress(e, setQuery){      
@@ -32,7 +28,7 @@ function SearchPage() {
           {/* <SearchBar keyPress={(e) => e.keyCode == 13 ? setQuery({ query: e.target.value}) : null} default_text={location.state.query}/> */}
           <SearchBar keyPress={(e) => keyPress(e,setQuery)} default_text={location.state.query}/>
           {/* <Cards search_query={location.state.query}/> */}
-          <Cards auth={auth} search_query={query}/>
+          <Cards search_query={query}/>
          </div>
          
 
