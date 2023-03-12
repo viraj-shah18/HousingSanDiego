@@ -22,13 +22,13 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import PeopleIcon from '@mui/icons-material/People';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import {useNavigate,useLocation} from 'react-router-dom';
 
 import {
   Routes,
   Route,
 } from "react-router-dom";
+import CollectionPopup from './components/CollectionsPopup';
 
 
 const pages = [{
@@ -195,10 +195,8 @@ function App(props) {
           <Box sx={{ flexGrow: 0 , display: { xs: 'none', md: 'flex' }}}>
             {/* <IconButton aria-label="Friends">
               <PeopleIcon />
-            </IconButton>
-            <IconButton aria-label="Collections" onClick={navigate("/collections")}>
-              <CollectionsBookmarkIcon />
             </IconButton> */}
+            {location.state ? <CollectionPopup/> : <></>}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
