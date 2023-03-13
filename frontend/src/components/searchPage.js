@@ -27,7 +27,7 @@ function SearchPage() {
     };
     const handleChangeBedroom = (event) => {
       setBedroomBound(event.target.value);
-      console.log("changebedroom",bathroomBound)
+      console.log("changebedroom",bedroomBound)
     };    
     function keyPress(e, setQuery){      
         // 13 refers to Enter key 

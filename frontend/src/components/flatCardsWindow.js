@@ -15,10 +15,10 @@ function IsCardFilter(flat,filterData){
   let flatcost = Number(temp)
   let result = true;
   
-  if(flatbath!=filterData.bathroom)result = false
+  if(flatbath!=filterData.bathroom && filterData.bathroom!=0)return false
   if(filterData.bathroom == 0) result = true
   console.log(result)
-  if(flatbed!=filterData.bedroom)result = false
+  if(flatbed!=filterData.bedroom && filterData.bedroom!=0)return false
   if(filterData.bedroom == 0) result = true
   console.log(result)
   if(!((flatcost>=filterData.costLB) && (flatcost<=filterData.costUB)))result = false
@@ -251,7 +251,7 @@ export default class Cards extends Component {
                                   }
                           btn_txt={"Show"} 
                           img={flat.property.img_id ? require("../imgs/"+flat.property.img_id): require("../imgs/house1.jpg") }
-
+                          key={index}
                           btn_comp= {<PropertyPopup miles={flat.miles} data={flat.property} />} //This is the popup component that shows the "SHOW MORE" button
                         
                         /> :
