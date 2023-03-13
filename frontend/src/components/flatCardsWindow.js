@@ -1,15 +1,11 @@
 // import React from 'react';
 import React, {Component, useState} from 'react';
-import {
-  MDBCardImage,
-} from 'mdb-react-ui-kit';
-import house1 from "../imgs/house1.jpg";
-import house2 from "../imgs/nuevo-east.jpg";
+// import house1 from "../imgs/house1.jpg";
+// import house2 from "../imgs/nuevo-east.jpg";
 import CardItem from './card';
 import LaJollaMap from './map'; 
 import axios from 'axios';
 import PropertyPopup from './propertyPopup'
-import {  useLocation } from "react-router-dom";
 
 // Used for testing when backend is not working
 const default_flat_list = [{"property": {
@@ -80,7 +76,9 @@ export default class Cards extends Component {
           {
             latitude: lat,
             longitude: long,
-            name:property_name            
+            name: property_name,  
+            property: data[i].property, // to save property info for each marker           
+            property_miles: data[i].miles // to display miles for each marker           
           }
         )
       }
@@ -116,12 +114,6 @@ export default class Cards extends Component {
     // Rendering the component only if 
     // passed props value is changed
     console.log("[shouldUpdate]")
-    console.log("nextProps.search_query: ", nextProps.search_query )
-    console.log("this.props.search_queryy: ", this.props.search_query )
-    console.log("nextProps.search_query.query: ", nextProps.search_query.query )    //new
-    console.log("this.props.search_query.query: ", this.props.search_query.query )  //new
-    console.log("nextState: ", nextState )
-    console.log("this.state: ", this.state )
 
     // if coming for the first time to the Search page or after resfresh 
     if (nextState.componentDidMount_run) {
@@ -157,7 +149,9 @@ export default class Cards extends Component {
             {
               latitude: lat,
               longitude: long,
-              name:property_name
+              name:property_name,
+              property: data[i].property, // to save property info for each marker
+              property_miles: data[i].miles // to display miles for each marker  
   
             }
           )
