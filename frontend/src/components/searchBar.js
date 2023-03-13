@@ -6,8 +6,10 @@ import "../styles.css";
 
 
 function SearchBar({keyPress, default_text="Search"}){
-  return  (      
+  return  (     
+  
   <div className="search">
+    {console.log("SearchBar rendered")}
   <TextField
     id="outlined-basic"
     variant="outlined"

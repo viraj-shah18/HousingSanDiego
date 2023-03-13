@@ -23,6 +23,14 @@ logger = logging.getLogger('django')
 
 from bson.objectid import ObjectId
 
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+
+
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+
+
 # User Endpoints ===================================
 
 # # /api/user 
@@ -99,7 +107,7 @@ def property_detail(request, id):
 # https://pypi.org/project/geopy/ geolocator
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
-geolocator = Nominatim(user_agent="HousingApp")
+geolocator = Nominatim(user_agent="HousingApp", timeout=3)
 
 # /api/property/search/<str:search_query>
 @api_view(['GET'])

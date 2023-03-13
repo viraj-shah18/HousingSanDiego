@@ -3,6 +3,7 @@ import HomePage from './components/homePage';
 import CollectionPage from './components/collectionList';
 import ProfilePage from './components/profilePage';
 import SearchPage from './components/searchPage';
+import PropertyPopup from './components/propertyPopup'
 import FindRoommate from './components/findRoommate';
 import LoginPage from './components/loginPage';
 import Cards from  './components/flatCardsWindow';
@@ -21,13 +22,13 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import PeopleIcon from '@mui/icons-material/People';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import {useNavigate,useLocation} from 'react-router-dom';
 
 import {
   Routes,
   Route,
 } from "react-router-dom";
+import CollectionPopup from './components/CollectionsPopup';
 
 
 const pages = [{
@@ -194,10 +195,8 @@ function App(props) {
           <Box sx={{ flexGrow: 0 , display: { xs: 'none', md: 'flex' }}}>
             {/* <IconButton aria-label="Friends">
               <PeopleIcon />
-            </IconButton>
-            <IconButton aria-label="Collections" onClick={navigate("/collections")}>
-              <CollectionsBookmarkIcon />
             </IconButton> */}
+            {location.state ? <CollectionPopup/> : <></>}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -236,7 +235,10 @@ function App(props) {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/find-roommate" element={<FindRoommate />} />   
-          <Route path="/map" element={<LaJollaMap />} />   
+          <Route path="/map" element={<LaJollaMap />} /> 
+          <Route path="/cards" element={<Cards />} />   
+          <Route path="/popup" element={<PropertyPopup />} />   
+          
       </Routes>
     </div>
   );

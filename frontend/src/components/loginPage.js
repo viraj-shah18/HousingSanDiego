@@ -1,23 +1,10 @@
 //This page is for user login
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { useState } from "react";
-import Avatar from '@mui/material/Avatar';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import Fab from '@mui/material/Fab';
-import Divider from '@mui/material/Divider';
+import { useState,useEffect } from "react";
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import Popper from '@mui/material/Popper';
-import Fade from '@mui/material/Fade';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import { Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -29,8 +16,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import {FetchAllUsers,FetchUser,CreateUser} from './api';
+import { GoogleLogin,googleLogout, useGoogleLogin } from '@react-oauth/google';
+import {FetchAllUsers,FetchUser,CreateUser,GoogleLoginAPI} from './api';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 function LoginPage(props) {
     const navigate = useNavigate();
@@ -42,8 +31,31 @@ function LoginPage(props) {
     const [showPassword, setShowPassword] = React.useState(false);
     const [isLoginFailed, setIsLoginFailed] = useState(false);
     const [isSignUpFailed, setIsSignUpFailed] = useState(false);
+    const [ googleUser, setGoogleUser ] = useState([]);
     // const [loginInfo, setLoginInfo] = useState(null);
-
+    const handleGoogleLogin =  useGoogleLogin({
+        onSuccess: async(codeResponse)  => {
+            console.log(codeResponse)
+            // setGoogleUser(codeResponse)
+            // console.log("googleuser:",googleUser)
+            let userInfo;
+            try{
+                userInfo = await GoogleLoginAPI(codeResponse.access_token)
+            }catch(error){
+                console.log(error)
+            }
+            if(userInfo){
+                navigate('/',{state:{loginInfo:userInfo}});
+            }
+        },
+        onError: (error) => console.log('Login Failed:', error)
+    });
+    const googleLoginResponse = (response) => {
+        console.log(response);
+    };
+    const googleLoginError = (error) => {
+        console.log(error);
+    };
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
       };
@@ -87,6 +99,12 @@ function LoginPage(props) {
             console.log(error)
         }
     }
+    // useEffect(
+    //     () => {
+    //         console.log("useeffect")
+    //     },
+    //     [ userName ]
+    // );
     return (
         <div>
             <Paper elevation={3} sx={{ width: '30%', mx:'auto', pr:15,pl:15,pb:15 }}>
@@ -162,6 +180,13 @@ function LoginPage(props) {
                             <Button  variant="contained" sx={{ mx:'auto',px:'10%' }} align='center'
                                 onClick={handleClickLogin}
                             >Login</Button>
+                            <Box sx={{ mx:'auto',px:'10%',mx:'10%',py:'5%' }}>
+                                {/* <GoogleLogin 
+                                    onSuccess={googleLoginResponse} 
+                                    onError={googleLoginError} 
+                                    /> */}
+                                <button onClick={() => handleGoogleLogin()}>Sign in with Google 🚀 </button>
+                            </Box>
                         </Box>
                     :
                         <Box align='center'>
