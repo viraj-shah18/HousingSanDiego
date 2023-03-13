@@ -11,6 +11,26 @@ import axios from 'axios';
 import PropertyPopup from './propertyPopup'
 import {  useLocation } from "react-router-dom";
 
+function IsCardFilter(flat,filterData){
+  let flatbed = Number(flat.property.num_bedrooms)
+  let flatbath = Number(flat.property.num_bathrooms)
+  let temp = flat.property.cost.match(/\d/g);
+  temp = temp.join("")
+  let flatcost = Number(temp)
+  let result = true;
+  
+  if(flatbath!=filterData.bathroom)result = false
+  if(filterData.bathroom == 0) result = true
+  console.log(result)
+  if(flatbed!=filterData.bedroom)result = false
+  if(filterData.bedroom == 0) result = true
+  console.log(result)
+  if(!((flatcost>=filterData.costLB) && (flatcost<=filterData.costUB)))result = false
+  console.log(result)
+  console.log("console flat and filter",flat,filterData,result,flatbed,flatbath,flatcost)
+  return result
+}
+
 // Used for testing when backend is not working
 const default_flat_list = [{"property": {
                                         "_id": "1", 
@@ -32,7 +52,7 @@ const default_flat_list = [{"property": {
                                         "miles": 0.8003237575172774},
                                         
                                         {"property": {"_id": "64082c73617ed7ce58fb89d7", "name": "La Jolla Palms Apartment Homes[test]", "cost": "3435", "address": null, "latitude": "32.869710000000000", "longitude": "-117.223450000000000", "num_bedrooms": 2, "num_bathrooms": 2, "street_address": "3535 Lebon Dr", "secondary_street_address": "", "city": "San Diego", "state": "CA", "zipcode": 92122, "img_id": "3535LebonDr.jpg", "desc": "In one of San Diego's most sought-after locations, this tech-connected community is near neighborhood eateries, UCSD Health and iconic white sand beaches. Modern homes designed for wellness offer dramatic picture windows and private outdoor space.", "contact_info": null}, "miles": 0.8047387367532339}, 
-                                        {"property": {"_id": "64082d9b617ed7ce58fb89d8", "name": "La Jolla International Gardens[test]", "cost": "2,545+", "address": null, "latitude": "32.866711000000000", "longitude": "-117.223991000000000", "num_bedrooms": 1, "num_bathrooms": 1, "street_address": "3417 Lebon Dr", "secondary_street_address": "", "city": "San Diego", "state": "CA", "zipcode": 92122, "img_id": "3417LebonDr.jpg", "desc": "Our apartments are newly renovated with all new cabinetry, countertops, appliances, fixtures and flooring. The units have fully equipped kitchens, ceiling fans, wood burning fireplaces and spacious walk in closets. Dramatic vaulted ceilings are in all top floor homes. Reserved underground parking spaces are assigned to all units. All applicants are required to submit a rental application, authorize a credit and background check, and pay a $45 application fee. We are just minutes from La Jolla Cove, UCSD, major freeways, shopping centers, theaters, restaurants and beautiful beaches. You can have it all at La Jolla International Gardens!", 
+                                        {"property": {"_id": "64082d9b617ed7ce58fb89d8", "name": "La Jolla International Gardens[test]", "cost": "2545", "address": null, "latitude": "32.866711000000000", "longitude": "-117.223991000000000", "num_bedrooms": 1, "num_bathrooms": 1, "street_address": "3417 Lebon Dr", "secondary_street_address": "", "city": "San Diego", "state": "CA", "zipcode": 92122, "img_id": "3417LebonDr.jpg", "desc": "Our apartments are newly renovated with all new cabinetry, countertops, appliances, fixtures and flooring. The units have fully equipped kitchens, ceiling fans, wood burning fireplaces and spacious walk in closets. Dramatic vaulted ceilings are in all top floor homes. Reserved underground parking spaces are assigned to all units. All applicants are required to submit a rental application, authorize a credit and background check, and pay a $45 application fee. We are just minutes from La Jolla Cove, UCSD, major freeways, shopping centers, theaters, restaurants and beautiful beaches. You can have it all at La Jolla International Gardens!", 
                                         "contact_info": null
                                       }, "miles": 0.8825049502283719}]
 
@@ -45,7 +65,12 @@ export default class Cards extends Component {
     super(props);
     this.state ={
       flats: [],
-      coords: []
+      coords: [],
+      filterData:{
+      bedroom: 0,
+      bathroom: 0,
+      costLB: 0,
+      costUB: 999999,}
       //componentDidMount_run: false
 
     }
@@ -90,7 +115,13 @@ export default class Cards extends Component {
         flats: response.data.list,
         coords: coordinates,
         search_query: this.props.search_query, // to keep track of updated search
-        componentDidMount_run: true // to keep track of firs time the page is loaded, otherwise shouldUpdate thinks it's the same query and does not update
+        componentDidMount_run: true, // to keep track of firs time the page is loaded, otherwise shouldUpdate thinks it's the same query and does not update
+        filterData:{
+        bedroom: this.props.filterData.bedroom,
+        bathroom: this.props.filterData.bathroom,
+        costLB: this.props.filterData.costLB,
+        costUB: this.props.filterData.costUB,
+        },
 
       });
     })
@@ -120,6 +151,7 @@ export default class Cards extends Component {
     console.log("this.props.search_queryy: ", this.props.search_query )
     console.log("nextProps.search_query.query: ", nextProps.search_query.query )    //new
     console.log("this.props.search_query.query: ", this.props.search_query.query )  //new
+    console.log("this.props.filterData: ", this.props.filterData )  //new
     console.log("nextState: ", nextState )
     console.log("this.state: ", this.state )
 
@@ -131,8 +163,9 @@ export default class Cards extends Component {
     }
 
     // if query has changed     
-    if (nextProps.search_query.query !== this.props.search_query.query) { // new
-    // if (nextProps.search_query !== this.props.search_query) {
+    //if ((nextProps.search_query.query !== this.props.search_query.query) || (JSON.stringify(nextProps.filterData)!== JSON.stringify(this.props.filterData))) { // new
+    if ((nextProps.search_query.query !== this.props.search_query.query) ) { // new
+      // if (nextProps.search_query !== this.props.search_query) {
     // if (nextState.componentDidMount_run || nextProps.search_query !== this.props.search_query) {  
       this.setState({componentDidMount_run: false});
       // ---------- GET NEW LIST OF FLATS ---------------
@@ -167,7 +200,11 @@ export default class Cards extends Component {
           coords: coordinates,
           // search_query: nextProps.search_query, // to keep track of updated search
           search_query: nextProps.search_query.query , // new
-          componentDidMount_run: false 
+          componentDidMount_run: false ,
+          bedroom: this.props.filterData.bedroom,
+          bathroom: this.props.filterData.bathroom,
+          costLB: this.props.filterData.costLB,
+          costUB: this.props.filterData.costUB,
         });
       })
       .catch( (error) => {
@@ -203,6 +240,7 @@ export default class Cards extends Component {
             {
               this.state.flats.map(
                 (flat, index) => (
+                  IsCardFilter(flat,this.props.filterData) == true ?
                 <CardItem title={flat.property.name} 
                           // short_desc={flat.property.desc} 
                           details={"Price: $"+flat.property.cost+
@@ -215,7 +253,9 @@ export default class Cards extends Component {
 
                           btn_comp= {<PropertyPopup miles={flat.miles} data={flat.property} />} //This is the popup component that shows the "SHOW MORE" button
                         
-                        /> 
+                        /> :
+                        <></>
+                      
                 )
               )
             }                        
