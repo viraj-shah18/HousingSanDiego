@@ -22,7 +22,11 @@ logger = logging.getLogger('django')
 # When using the python shell to test, just use: print("blah")
 
 from bson.objectid import ObjectId
+
+from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+
+
 
 # # /api/user 
 # @api_view(['GET', 'POST'])
@@ -128,7 +132,44 @@ def property_search(request, search_query):
 
         # Return a JSON list of objects, each obj has field property and miles
         return JsonResponse({"list" : property_mile_list})   
-        
+
+# NEW CODE TEST
+class PropertySearch(APIView):
+    permission_classes = [AllowAny]
+    # def post(self, request, format='json'):
+    #     serializer = CustomUserSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         user = serializer.save()
+    #         if user:
+    #             json = serializer.data
+    #             return Response(json, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request,  search_query,  format='json'):
+
+        print("Query: " + search_query)
+        property_objs = Property.objects.all()
+        property_serializer = PropertySerializer(property_objs, many=True)  
+
+        location = geolocator.geocode(search_query.replace("_", " ")) 
+        coords = (location.latitude, location.longitude)
+
+        print("Parsed Address:")
+        print(location.address)
+        print(coords)
+
+        property_mile_list = [] # contains objs that look like { property: {property model}, Miles: 0 }
+
+        # For each property in the DB, calculate geodesic distance between the search_query and property
+        for property_dict in property_serializer.data:
+            miles = geodesic(coords, (property_dict["latitude"], property_dict["longitude"])).miles
+            property_mile_list.append({ "property" : property_dict, "miles" : miles})
+
+        # Sort properties by distance, ascending
+        property_mile_list.sort(key=lambda property_mile: property_mile["miles"])
+
+        # Return a JSON list of objects, each obj has field property and miles
+        return JsonResponse({"list" : property_mile_list})     
 
 
 
