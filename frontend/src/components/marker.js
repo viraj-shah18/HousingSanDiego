@@ -1,10 +1,9 @@
 
 import React from 'react';
 
-
-function Marker({ color, name, id }){    
+function Marker({ color, name , onClick}){     
     return (
-      <div className="marker"
+      <div onClick={() => onClick()} className="marker"
         style={{ backgroundColor: color, cursor: 'pointer'}}
         title={name}
       />
