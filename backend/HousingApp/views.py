@@ -151,7 +151,7 @@ def all_collections(request):
 # /api/collection/id/<str:id>
 @authentication_classes([]) 
 @permission_classes([])
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'DELETE'])
 def collection_details(request, id):
     #find collection by id
     try: 
@@ -163,15 +163,15 @@ def collection_details(request, id):
         collection_serializer = CollectionSerializer(collection)
         return JsonResponse(collection_serializer.data)
 
-    elif request.method == 'PUT': 
-        collection_data = request.data
-        collection_serializer = CollectionSerializer(collection, data=collection_data) 
+    # elif request.method == 'PUT': 
+    #     collection_data = request.data
+    #     collection_serializer = CollectionSerializer(collection, data=collection_data) 
 
-        if collection_serializer.is_valid(): 
-            collection_serializer.save() 
-            return JsonResponse(collection_serializer.data) 
+    #     if collection_serializer.is_valid(): 
+    #         collection_serializer.save() 
+    #         return JsonResponse(collection_serializer.data) 
 
-        return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE': 
         collection.delete() 

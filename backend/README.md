@@ -205,6 +205,8 @@ data = {
 response = client.post(url, data=data, content_type='application/json')
 ```
 
+### url = '/api/collection/id/<str:id>' [GET a collection by id, DELETE a collection by id]
+
 ### url = 'api/collection/add/<str:collection_id>/<str:property_id>' [PUT (add) single property into a collection]
 ```
 url = '/api/collection/add/6410625704af2ee86e2054f4/64082270617ed7ce58fb89d6'
