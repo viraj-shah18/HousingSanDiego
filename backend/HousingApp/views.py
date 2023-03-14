@@ -140,10 +140,6 @@ def all_collections(request):
     
     elif request.method == 'POST': 
         collection_data = request.data    
-        # collection_data["properties"] = json.loads(collection_data["properties"]) # convert str into list
-        # print(collection_data)
-        # print(collection_data["properties"])
-        # print(type(collection_data["properties"]))
         collection_serializer = CollectionSerializer(data=collection_data)
 
         if collection_serializer.is_valid():
@@ -180,26 +176,6 @@ def collection_details(request, id):
     elif request.method == 'DELETE': 
         collection.delete() 
         return JsonResponse({'message': 'Collection was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
-
-class PropertySearch(APIView):
-    permission_classes = [AllowAny]
-
-    def put(self, request,  collection_id,  property_id, format='json'):
-        try: 
-            collection = Collection.objects.get(pk=ObjectId(collection_id))
-        except Collection.DoesNotExist: 
-            return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
-        # find property by id
-        try: 
-            property_obj = Property.objects.get(pk=ObjectId(property_id)) 
-        except Property.DoesNotExist: 
-            return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
-        collection.properties.add(property_obj)
-        collection.save()
-
-        return JsonResponse(collection_serializer.data) 
 
 class AddToCollection(APIView):
     permission_classes = [AllowAny]
@@ -245,26 +221,6 @@ class RemoveFromCollection(APIView):
 
 
 
-@authentication_classes([]) 
-@permission_classes([])
-@api_view(['PUT'])
-def collection_remove_property(request, collection_id, property_id):
-    try: 
-        collection = Collection.objects.get(pk=ObjectId(collection_id))
-    except Collection.DoesNotExist: 
-        return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
-    # find property by id
-    try: 
-        property_obj = Property.objects.get(pk=ObjectId(property_id)) 
-    except Property.DoesNotExist: 
-        return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
-    collection.properties.remove(property_obj)
-    collection.save()
-
-    return JsonResponse(collection_serializer.data) 
-
 
 # api/user_collection/<str:id>
 # @api_view(['GET', 'PUT'])
@@ -302,82 +258,82 @@ def collection_remove_property(request, collection_id, property_id):
 #     return clone
 
 # /api/user_collection/<str:user_id>
-@api_view(['POST', 'DELETE'])
-def user_collection_edit(request, user_id):
-    # Try to find the specified user
-    try: 
-        user = User.objects.get(pk=ObjectId(user_id)) 
-    except User.DoesNotExist: 
-        return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+# @api_view(['POST', 'DELETE'])
+# def user_collection_edit(request, user_id):
+#     # Try to find the specified user
+#     try: 
+#         user = User.objects.get(pk=ObjectId(user_id)) 
+#     except User.DoesNotExist: 
+#         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-    if request.method == 'POST': # NOT TESTED (with properites list)
-        # Found user, now POST a new collection into the Collections mongo collection
-        collection_data = request.data    
-        collection_serializer = CollectionSerializer(data=collection_data)
+#     if request.method == 'POST': # NOT TESTED (with properites list)
+#         # Found user, now POST a new collection into the Collections mongo collection
+#         collection_data = request.data    
+#         collection_serializer = CollectionSerializer(data=collection_data)
         
-        if collection_serializer.is_valid():
-            collection_serializer.save()
-        else:
-            return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         if collection_serializer.is_valid():
+#             collection_serializer.save()
+#         else:
+#             return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Collection posted, now add new collection id to user list of collections, like a PUT request
-        user_serializer = UserUpdateSerializer(user, data=user.data) 
-        permission_classes = (IsAuthenticated,)
-        if user_serializer.is_valid(): 
-            user_serializer.save() 
-            messages.success(request, f'Account has been updated')
-            return JsonResponse(user_serializer.data)
-        else:
-            return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         # Collection posted, now add new collection id to user list of collections, like a PUT request
+#         user_serializer = UserUpdateSerializer(user, data=user.data) 
+#         permission_classes = (IsAuthenticated,)
+#         if user_serializer.is_valid(): 
+#             user_serializer.save() 
+#             messages.success(request, f'Account has been updated')
+#             return JsonResponse(user_serializer.data)
+#         else:
+#             return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        user.collections.append(collection_serializer.data)
-        user.save()
+#         user.collections.append(collection_serializer.data)
+#         user.save()
 
-        return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
+#         return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
 
-    elif request.method == 'DELETE': # TESTED
-        collection_data = request.data
+#     elif request.method == 'DELETE': # TESTED
+#         collection_data = request.data
 
-        if "_id" not in collection_data:
-            return JsonResponse({'message': 'In request body, need to specify an _id for the collection to be deleted'}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+#         if "_id" not in collection_data:
+#             return JsonResponse({'message': 'In request body, need to specify an _id for the collection to be deleted'}, 
+#                                 status=status.HTTP_400_BAD_REQUEST)
 
-        try: 
-            collection_obj = Collection.objects.get(pk=ObjectId(collection_data["_id"])) 
-        except Collection.DoesNotExist: 
-            return JsonResponse({'message': 'The Collection with this _id does not exist'}, status=status.HTTP_404_NOT_FOUND)        
+#         try: 
+#             collection_obj = Collection.objects.get(pk=ObjectId(collection_data["_id"])) 
+#         except Collection.DoesNotExist: 
+#             return JsonResponse({'message': 'The Collection with this _id does not exist'}, status=status.HTTP_404_NOT_FOUND)        
 
-        # Delete collection with id 
-        collection_obj.delete() 
+#         # Delete collection with id 
+#         collection_obj.delete() 
 
-        # Remove collection with this id from user collection lists
-        requested_collection_id = ObjectId(collection_data["_id"])
-        collection_delete_index = 0
-        for i, user_collection_data in enumerate(user.collections):
-            if user_collection_data["_id"] == requested_collection_id:
-                collection_delete_index = i
-                break
-        else:
-            return JsonResponse({'message': 'Collection deleted in DB but was not found in User collection list'}, 
-                                status=status.HTTP_404_NOT_FOUND)        
+#         # Remove collection with this id from user collection lists
+#         requested_collection_id = ObjectId(collection_data["_id"])
+#         collection_delete_index = 0
+#         for i, user_collection_data in enumerate(user.collections):
+#             if user_collection_data["_id"] == requested_collection_id:
+#                 collection_delete_index = i
+#                 break
+#         else:
+#             return JsonResponse({'message': 'Collection deleted in DB but was not found in User collection list'}, 
+#                                 status=status.HTTP_404_NOT_FOUND)        
 
-        user.collections.pop(collection_delete_index)
-        user.save()
-        collections_clone = [convert_dict_to_dict_str(collections_data) for collections_data in user.collections]
-        return JsonResponse({"list" : collections_clone}, status=status.HTTP_201_CREATED) 
+#         user.collections.pop(collection_delete_index)
+#         user.save()
+#         collections_clone = [convert_dict_to_dict_str(collections_data) for collections_data in user.collections]
+#         return JsonResponse({"list" : collections_clone}, status=status.HTTP_201_CREATED) 
 
-# api/collection/<str:collection_id>
-@api_view(['GET', 'PUT'])
-def collection_detail(request, collection_id):
-    # find a single collection by id
-    try: 
-        collection_obj = Collection.objects.get(pk=ObjectId(collection_id)) 
-    except Collection.DoesNotExist: 
-        return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+# # api/collection/<str:collection_id>
+# @api_view(['GET', 'PUT'])
+# def collection_detail(request, collection_id):
+#     # find a single collection by id
+#     try: 
+#         collection_obj = Collection.objects.get(pk=ObjectId(collection_id)) 
+#     except Collection.DoesNotExist: 
+#         return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-    if request.method == 'GET': # TESTED
-        collection_serializer = CollectionSerializer(collection_obj) 
-        return JsonResponse(collection_serializer.data) 
+#     if request.method == 'GET': # TESTED
+#         collection_serializer = CollectionSerializer(collection_obj) 
+#         return JsonResponse(collection_serializer.data) 
 
     # for directly editing a collection
     # elif request.method == 'PUT': # NOT TESTED
