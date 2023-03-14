@@ -19,6 +19,16 @@ class Social_Info(models.Model):
 	class Meta:
 		abstract = True
 
+class Address(models.Model):
+	street_address: str = models.CharField(max_length=30)
+	secondary_street_address: str = models.CharField(max_length=30, blank=True, null=True)
+	city: str = models.CharField(max_length=20)
+	state: str = models.CharField(max_length=2)
+	zipcode: int = models.PositiveIntegerField()
+
+	class Meta:
+		abstract = True
+
 # End Sub-models =======================================
 
 class Property(models.Model):
@@ -44,12 +54,12 @@ class Property(models.Model):
 	# https://medium.com/@tech-learner/upload-images-in-database-using-django-dc652941122b
 	#images = models.ArrayField(ImageField(upload_to='images/', default=None))	
 
+class Collection(models.Model):
+    _id: str = models.ObjectIdField(primary_key=True)
+    name: str = models.CharField(max_length=32)
+    desc: str = models.CharField(max_length=120, blank=True, null=True)
+    properties = models.ManyToManyField(Property, blank=True, related_name="properties")
+    
 class CollectionList(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user")
     collections = models.ManyToManyField(Collection, blank=True, related_name="collections")
-
-class Collection(models.Model):
-	collection_list_ref = models.OneToOneField(CollectionList, on_delete=models.CASCADE)
-	name: str = models.CharField(max_length=32)
-	desc: str = models.CharField(max_length=120, blank=True, null=True)
-    properties = models.ManyToManyField(Property, blank=True, related_name="properties")

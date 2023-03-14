@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework.renderers import JSONRenderer
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 # import viewsets
 from rest_framework import viewsets
@@ -31,67 +31,17 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
 
-# User Endpoints ===================================
-
-# # /api/user 
-# @api_view(['GET', 'POST'])
-# def user_list(request):
-#     if request.method == 'GET': # TESTED
-#         users = User.objects.all()
-        
-#         user_serializer = UserSerializer(users, many=True)
-#         return JsonResponse({"list" : user_serializer.data})
-#         # 'safe=False' for objects serialization
- 
-#     elif request.method == 'POST': # TESTED
-#         user_data = request.data # JSONParser().parse(request) #didn't work      
-#         user_serializer = UserSerializer(data=user_data)
-        
-#         if user_serializer.is_valid():
-#             user_serializer.save()
-#             return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
-
-#         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-# # api/user/<str:id>
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def user_detail(request, id):
-#     # find user by id
-#     try: 
-#         user = User.objects.get(pk=ObjectId(id)) 
-#     except User.DoesNotExist: 
-#         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
-
-#     if request.method == 'GET': # TESTED
-#         user_serializer = UserSerializer(user) 
-#         return JsonResponse(user_serializer.data) 
-
-#     elif request.method == 'PUT': # TESTED
-#         user_data = request.data
-#         user_serializer = UserSerializer(user, data=user_data) 
-
-#         if user_serializer.is_valid(): 
-#             user_serializer.save() 
-#             return JsonResponse(user_serializer.data) 
-
-#         return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     elif request.method == 'DELETE': # TESTED
-#         user.delete() 
-#         return JsonResponse({'message': 'User was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
-
-
 # Property Endpoints ===================================
 
-# /api/property
+# api/property
 @api_view(['GET'])
 def property_list(request):
     if request.method == 'GET': # TESTED
         property_objs = Property.objects.all()
         property_serializer = PropertySerializer(property_objs, many=True)  
-        return JsonResponse({"list" : property_serializer.data})
+        return JsonResponse(property_serializer.data, safe=False)   
 
-# /api/property/id/<str:id>
+# api/property/id/<str:id>
 @api_view(['GET'])
 def property_detail(request, id):
     # find property by id
@@ -104,12 +54,11 @@ def property_detail(request, id):
         property_serializer = PropertySerializer(property_obj) 
         return JsonResponse(property_serializer.data) 
 
-# https://pypi.org/project/geopy/ geolocator
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 geolocator = Nominatim(user_agent="HousingApp", timeout=3)
 
-# /api/property/search/<str:search_query>
+# api/property/search/<str:search_query>
 @api_view(['GET'])
 def property_search(request, search_query):
     # find closest properties (in sorted order) by search_query str
@@ -137,9 +86,185 @@ def property_search(request, search_query):
 
         # Return a JSON list of objects, each obj has field property and miles
         return JsonResponse({"list" : property_mile_list})   
-        
 
+# NEW CODE TEST
+class PropertySearch(APIView):
+    permission_classes = [AllowAny]
+    # def post(self, request, format='json'):
+    #     serializer = CustomUserSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         user = serializer.save()
+    #         if user:
+    #             json = serializer.data
+    #             return Response(json, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request,  search_query,  format='json'):
+
+        print("Query: " + search_query)
+        property_objs = Property.objects.all()
+        property_serializer = PropertySerializer(property_objs, many=True)  
+
+        location = geolocator.geocode(search_query.replace("_", " ")) 
+        coords = (location.latitude, location.longitude)
+
+        print("Parsed Address:")
+        print(location.address)
+        print(coords)
+
+        property_mile_list = [] # contains objs that look like { property: {property model}, Miles: 0 }
+
+        # For each property in the DB, calculate geodesic distance between the search_query and property
+        for property_dict in property_serializer.data:
+            miles = geodesic(coords, (property_dict["latitude"], property_dict["longitude"])).miles
+            property_mile_list.append({ "property" : property_dict, "miles" : miles})
+
+        # Sort properties by distance, ascending
+        property_mile_list.sort(key=lambda property_mile: property_mile["miles"])
+
+        # Return a JSON list of objects, each obj has field property and miles
+        return JsonResponse({"list" : property_mile_list})     
+
+        
 # Collection Endpoints ===================================
+
+# /api/collection/
+@api_view(['GET', 'POST'])
+@authentication_classes([]) 
+@permission_classes([])
+def all_collections(request):
+    if request.method == 'GET': 
+        collections = Collection.objects.all() 
+        collection_serializer = CollectionSerializer(collections, many=True)
+        return JsonResponse({"list" : collection_serializer.data})
+    
+    elif request.method == 'POST': 
+        collection_data = request.data    
+        # collection_data["properties"] = json.loads(collection_data["properties"]) # convert str into list
+        # print(collection_data)
+        # print(collection_data["properties"])
+        # print(type(collection_data["properties"]))
+        collection_serializer = CollectionSerializer(data=collection_data)
+
+        if collection_serializer.is_valid():
+            collection_serializer.save()
+            return JsonResponse(collection_serializer.data, status=status.HTTP_201_CREATED) 
+
+    return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# /api/collection/id/<str:id>
+@authentication_classes([]) 
+@permission_classes([])
+@api_view(['GET', 'PUT', 'DELETE'])
+def collection_details(request, id):
+    #find collection by id
+    try: 
+        collection = Collection.objects.get(pk=ObjectId(id))
+    except Collection.DoesNotExist: 
+        return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+    if request.method == 'GET': 
+        collection_serializer = CollectionSerializer(collection)
+        return JsonResponse(collection_serializer.data)
+
+    elif request.method == 'PUT': 
+        collection_data = request.data
+        collection_serializer = CollectionSerializer(collection, data=collection_data) 
+
+        if collection_serializer.is_valid(): 
+            collection_serializer.save() 
+            return JsonResponse(collection_serializer.data) 
+
+        return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE': 
+        collection.delete() 
+        return JsonResponse({'message': 'Collection was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+
+class PropertySearch(APIView):
+    permission_classes = [AllowAny]
+
+    def put(self, request,  collection_id,  property_id, format='json'):
+        try: 
+            collection = Collection.objects.get(pk=ObjectId(collection_id))
+        except Collection.DoesNotExist: 
+            return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+        # find property by id
+        try: 
+            property_obj = Property.objects.get(pk=ObjectId(property_id)) 
+        except Property.DoesNotExist: 
+            return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+        collection.properties.add(property_obj)
+        collection.save()
+
+        return JsonResponse(collection_serializer.data) 
+
+class AddToCollection(APIView):
+    permission_classes = [AllowAny]
+
+    def put(self, request, collection_id,  property_id, format='json'):
+        try: 
+            collection = Collection.objects.get(pk=ObjectId(collection_id))
+        except Collection.DoesNotExist: 
+            return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+        # find property by id
+        try: 
+            property_obj = Property.objects.get(pk=ObjectId(property_id)) 
+        except Property.DoesNotExist: 
+            return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+        collection.properties.add(property_obj)
+        collection.save()
+        collection_serializer = CollectionSerializer(collection) 
+
+        return JsonResponse(collection_serializer.data) 
+
+class RemoveFromCollection(APIView):
+    permission_classes = [AllowAny]
+    
+    def put(self, request, collection_id,  property_id, format='json'):
+        try: 
+            collection = Collection.objects.get(pk=ObjectId(collection_id))
+        except Collection.DoesNotExist: 
+            return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+        # find property by id
+        try: 
+            property_obj = Property.objects.get(pk=ObjectId(property_id)) 
+        except Property.DoesNotExist: 
+            return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+        collection.properties.remove(property_obj)
+        collection.save()
+        collection_serializer = CollectionSerializer(collection) 
+
+        return JsonResponse(collection_serializer.data) 
+
+
+
+@authentication_classes([]) 
+@permission_classes([])
+@api_view(['PUT'])
+def collection_remove_property(request, collection_id, property_id):
+    try: 
+        collection = Collection.objects.get(pk=ObjectId(collection_id))
+    except Collection.DoesNotExist: 
+        return JsonResponse({'message': 'The Collection does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+    # find property by id
+    try: 
+        property_obj = Property.objects.get(pk=ObjectId(property_id)) 
+    except Property.DoesNotExist: 
+        return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+    collection.properties.remove(property_obj)
+    collection.save()
+
+    return JsonResponse(collection_serializer.data) 
+
 
 # api/user_collection/<str:id>
 # @api_view(['GET', 'PUT'])
@@ -168,13 +293,13 @@ def property_search(request, search_query):
 #         # return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # HELPER METHOD used for formatting collections json response
-def convert_dict_to_dict_str(data_dict):
-    clone = dict()
+# def convert_dict_to_dict_str(data_dict):
+#     clone = dict()
 
-    for key in data_dict:
-        clone[key] = str(data_dict[key])
+#     for key in data_dict:
+#         clone[key] = str(data_dict[key])
 
-    return clone
+#     return clone
 
 # /api/user_collection/<str:user_id>
 @api_view(['POST', 'DELETE'])
@@ -185,7 +310,7 @@ def user_collection_edit(request, user_id):
     except User.DoesNotExist: 
         return JsonResponse({'message': 'The user does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-    if request.method == 'POST': # TESTED      (without properties list)
+    if request.method == 'POST': # NOT TESTED (with properites list)
         # Found user, now POST a new collection into the Collections mongo collection
         collection_data = request.data    
         collection_serializer = CollectionSerializer(data=collection_data)
@@ -195,13 +320,20 @@ def user_collection_edit(request, user_id):
         else:
             return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Collection posted, now add new collection id to user list of collections 
-        # Collections data (every field except id can be outdated) saved into user.collections
+        # Collection posted, now add new collection id to user list of collections, like a PUT request
+        user_serializer = UserUpdateSerializer(user, data=user.data) 
+        permission_classes = (IsAuthenticated,)
+        if user_serializer.is_valid(): 
+            user_serializer.save() 
+            messages.success(request, f'Account has been updated')
+            return JsonResponse(user_serializer.data)
+        else:
+            return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         user.collections.append(collection_serializer.data)
         user.save()
 
-        collections_clone = [convert_dict_to_dict_str(collections_data) for collections_data in user.collections]
-        return JsonResponse({"list" : collections_clone}, status=status.HTTP_201_CREATED) 
+        return JsonResponse(user_serializer.data, status=status.HTTP_201_CREATED) 
 
     elif request.method == 'DELETE': # TESTED
         collection_data = request.data
@@ -248,27 +380,32 @@ def collection_detail(request, collection_id):
         return JsonResponse(collection_serializer.data) 
 
     # for directly editing a collection
-    elif request.method == 'PUT': # NOT TESTED
-        collection_data = request.data
+    # elif request.method == 'PUT': # NOT TESTED
+    #     collection_data = request.data
 
-        # TODO fjdlsakjf
-        # properties_id = collection_data
-        print(collection_data)
-        # print(type(collection_data["properties_list"]))
-        # print(collection_data["properties_list"][0])
+    #     # TODO fjdlsakjf
+    #     # properties_id = collection_data
+    #     print(collection_data)
+    #     # print(type(collection_data["properties_list"]))
+    #     # print(collection_data["properties_list"][0])
 
-        # try: 
-        #     collection_obj = Properties.objects.get(pk=ObjectId(collection_id)) 
-        # except Collection.DoesNotExist: 
-        #     return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+    #     # try: 
+    #     #     collection_obj = Properties.objects.get(pk=ObjectId(collection_id)) 
+    #     # except Collection.DoesNotExist: 
+    #     #     return JsonResponse({'message': 'The Property does not exist'}, status=status.HTTP_404_NOT_FOUND) 
 
-        collection_serializer = CollectionSerializer(collection_obj, data=collection_data) 
-        # collection_obj.properties_list.append(collection_serializer.data)
-        # collections_obj.save()
+    #     collection_serializer = CollectionSerializer(collection_obj, data=collection_data) 
+    #     # collection_obj.properties_list.append(collection_serializer.data)
+    #     # collections_obj.save()
 
-        if collection_serializer.is_valid(): 
-            collection_serializer.save() 
-            print(collection_obj.data)
-            return JsonResponse(collection_obj.data) 
+    #     if collection_serializer.is_valid(): 
+    #         collection_serializer.save() 
+    #         print(collection_obj.data)
+    #         return JsonResponse(collection_obj.data) 
 
-        return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return JsonResponse(collection_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# NEW CODE FOR COLLECTIONS
+
+# /api/user_collection/<str:user_id>
