@@ -25,11 +25,19 @@ function Search({ details }) {
       if(e.keyCode == 13){
         console.log('Search query: ', e.target.value);
         //navigate("/search")
-        navigate("/search", {
-          state: {loginInfo:location.state.loginInfo,
-              query: e.target.value, //pass search query into state.query prop
-          },
-      });
+        if (location.state){
+          navigate("/search", {
+            state: {loginInfo:location.state.loginInfo,
+                query: e.target.value, //pass search query into state.query prop
+            },
+        });
+        }
+        else{
+          navigate("/search", {
+            state: {query: e.target.value, //pass search query into state.query prop
+            }
+          })
+        }
       }
     }
 
