@@ -6,26 +6,7 @@ import CardItem from './card';
 import LaJollaMap from './map'; 
 import axios from 'axios';
 import PropertyPopup from './propertyPopup'
-
-function IsCardFilter(flat,filterData){
-  let flatbed = Number(flat.property.num_bedrooms)
-  let flatbath = Number(flat.property.num_bathrooms)
-  let temp = flat.property.cost.match(/\d/g);
-  temp = temp.join("")
-  let flatcost = Number(temp)
-  let result = true;
-  
-  if(flatbath!=filterData.bathroom && filterData.bathroom!=0)return false
-  if(filterData.bathroom == 0) result = true
-  console.log(result)
-  if(flatbed!=filterData.bedroom && filterData.bedroom!=0)return false
-  if(filterData.bedroom == 0) result = true
-  console.log(result)
-  if(!((flatcost>=filterData.costLB) && (flatcost<=filterData.costUB)))result = false
-  console.log(result)
-  console.log("console flat and filter",flat,filterData,result,flatbed,flatbath,flatcost)
-  return result
-}
+import { useLocation } from 'react-router-dom';
 
 // Used for testing when backend is not working
 const default_flat_list = [{"property": {
@@ -53,7 +34,7 @@ const default_flat_list = [{"property": {
                                       }, "miles": 0.8825049502283719}]
 
 
-export default class Cards extends Component {
+export default class CollectionCards extends Component {
   // This component displays a two column screen. Left column contains a vertical sequence of CardItem components and the right side shows a map centered in La Jolla. 
   // These components are integrated with the backend and axios.get() is used to retrived data from search queries. Search query is expecte to come as a prop. 
 
@@ -62,47 +43,46 @@ export default class Cards extends Component {
     this.state ={
       flats: [],
       coords: [],
-      filterData:{
-      bedroom: 0,
-      bathroom: 0,
-      costLB: 0,
-      costUB: 999999,}
+      username: props.username,
+      password: props.password
       //componentDidMount_run: false
-
     }
   }
 
   
   // runs one time when rendered first time
   componentDidMount(){
+    let auth= {
+        'username': this.state.username,
+        'password': this.state.password
+      }
     console.log("Cards- didMount")
     // console.log("search_query: "+ this.props.search_query.replace(/ /g,"_"))
     // Get request to backend: It hits Django backedn and the text after search/ is the search query with _ instead of spaces
-    const search_url_part = this.props.search_query ? this.props.search_query.replace(/ /g,"_") : "UC_San_Diego"
-    const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
+    const url_ = "http://127.0.0.1:8000/api/collection/id/6402db2b31f63b058ad8832e"
     console.log("url_: "+ url_)
+    console.log({auth})
     // this.setState({componentDidMount_run: true});
     
 
-    //console.log("Auth: " + this.props.auth)
-    //axios.get(url_,{auth:this.props.auth})
-    axios.get(url_)
+    axios.get(url_, {auth:auth})
     .then( (response) => {
       console.log("DidMount: ", response)
       // Get array of coordinates
-      var data = response.data.list
+      var data = response.data.properties
       var coordinates = []
       var i ;
+      console.log({test:data[0]})
       for(i=0; i < data.length; i++){
-        var lat = data[i].property.latitude
-        var long = data[i].property.longitude
-        var property_name = data[i].property.name
+        var lat = data[i].latitude
+        var long = data[i].longitude
+        var property_name = data[i].name
         coordinates.push(
           {
             latitude: lat,
             longitude: long,
             name: property_name,  
-            property: data[i].property, // to save property info for each marker           
+            property: data[i], // to save property info for each marker           
             property_miles: data[i].miles // to display miles for each marker           
           }
         )
@@ -110,16 +90,10 @@ export default class Cards extends Component {
       // console.log("DidMount-coord: ", coordinates)
 
       this.setState({
-        flats: response.data.list,
+        flats: response.data.properties,
         coords: coordinates,
         search_query: this.props.search_query, // to keep track of updated search
         componentDidMount_run: true, // to keep track of firs time the page is loaded, otherwise shouldUpdate thinks it's the same query and does not update
-        filterData:{
-        bedroom: this.props.filterData.bedroom,
-        bathroom: this.props.filterData.bathroom,
-        costLB: this.props.filterData.costLB,
-        costUB: this.props.filterData.costUB,
-        },
 
       });
     })
@@ -138,126 +112,27 @@ export default class Cards extends Component {
 
   }
 
-
-  // compares current state and next, if query is changed, then it updates state (this) and then returns true meaning that it should re render
-  // also when it's coming from the Home page it runs componentDidMount the first time so we check if it has run then don't get data again, just return true and reverse flag. 
-  shouldComponentUpdate(nextProps, nextState) {
-    // Rendering the component only if 
-    // passed props value is changed
-    console.log("[shouldUpdate]")
-
-
-    // if coming for the first time to the Search page or after resfresh 
-    if (nextState.componentDidMount_run) {
-      console.log("[nextState.componentDidMount_run] " + nextState.componentDidMount_run)
-      this.setState({componentDidMount_run: false});
-      return true
-    }
-    console.log("nextProps: " + nextProps)
-    console.log("this.props: " + this.props)
-    // if query has changed     
-    //if ((nextProps.search_query.query !== this.props.search_query.query) || (JSON.stringify(nextProps.filterData)!== JSON.stringify(this.props.filterData))) { // new
-    if (
-      (nextProps.search_query.query !== this.props.search_query.query) ||
-      (nextProps.filterData.bedroom !== this.props.filterData.bedroom) ||
-      (nextProps.filterData.bathroom !== this.props.filterData.bathroom) ||
-      (nextProps.filterData.costLB !== this.props.filterData.costLB) ||
-      (nextProps.filterData.costUB !== this.props.filterData.costUB) 
-      ) { // new
-      // if (nextProps.search_query !== this.props.search_query) {
-    // if (nextState.componentDidMount_run || nextProps.search_query !== this.props.search_query) {  
-      this.setState({componentDidMount_run: false});
-      // ---------- GET NEW LIST OF FLATS ---------------
-      //const search_url_part = nextProps.search_query ? nextProps.search_query.replace(/ /g,"_") : "UC_San_Diego"
-      const search_url_part = nextProps.search_query.query ? nextProps.search_query.query.replace(/ /g,"_") : "UC_San_Diego" //new
-      const url_ = "http://127.0.0.1:8000/api/property/search/" + search_url_part
-      console.log("[in if]")
-      console.log("url_: "+ url_)
-      // GET REQUEST TO THE BACKEND
-      axios.get(url_)
-      .then( (response) => {
-        console.log("Updating!", response)
-        // Get array of coordinates
-        var data = response.data.list
-        var coordinates = []
-        var i ;
-        for(i=0; i < data.length; i++){
-          var lat = data[i].property.latitude
-          var long = data[i].property.longitude
-          var property_name = data[i].property.name
-          coordinates.push(
-            {
-              latitude: lat,
-              longitude: long,
-              name:property_name,
-              property: data[i].property, // to save property info for each marker
-              property_miles: data[i].miles // to display miles for each marker  
-  
-            }
-          )
-        }  
-        this.setState({
-          flats: response.data.list,
-          coords: coordinates,
-          // search_query: nextProps.search_query, // to keep track of updated search
-          search_query: nextProps.search_query.query , // new
-          componentDidMount_run: false ,
-          bedroom: this.props.filterData.bedroom,
-          bathroom: this.props.filterData.bathroom,
-          costLB: this.props.filterData.costLB,
-          costUB: this.props.filterData.costUB
-        });
-      })
-      .catch( (error) => {
-          console.log("error?");
-          console.log(error);
-          // set a test state to show some test cards
-          this.setState({
-            flats: default_flat_list,
-            coords: [{
-              latitude: 32.866220000000000,
-              longitude: -117.226360000000000,
-              name:"test"
-            }],
-            componentDidMount_run: false
-          });
-      });
-      // ------------------------------------------------
-
-      return true;
-    } 
-    else {
-      return false;
-    }
-  }
-
   render()  {
         // console.log("this.state.flats" + this.state.flats)
         return (
           <>
           <div className="row">
-            {console.log("Cards rendred")}
+            {console.log(this.state.flats)}
           <div className="left-pane-search">
             {
               this.state.flats.map(
                 (flat, index) => (
-                  IsCardFilter(flat,this.props.filterData) == true ?
-                <CardItem title={flat.property.name} 
-                          // short_desc={flat.property.desc} 
-                          details={"Price: $"+flat.property.cost+
-                                   " Distance: "+flat.miles.toFixed(2)+" miles."+
-                                   " Beds: "+flat.property.num_bedrooms+
-                                   " Bathrooms: "+ flat.property.num_bathrooms
+                <CardItem title={flat.name} 
+                          details={"Price: $"+flat.cost+
+                                   " Beds: "+flat.num_bedrooms+
+                                   " Bathrooms: "+ flat.num_bathrooms
                                   }
                           btn_txt={"Show"} 
-                          img={flat.property.img_id ? require("../imgs/"+flat.property.img_id): require("../imgs/house1.jpg") }
+                          img={flat.img_id ? require("../imgs/"+flat.img_id): require("../imgs/house1.jpg") }
                           key={index}
-                          propertyID={flat.property._id}
-                          btn_comp= {<PropertyPopup miles={flat.miles} data={flat.property} />} //This is the popup component that shows the "SHOW MORE" button
-                        
-                        /> :
-                        <></>
-                      
+                          id={flat._id}
+                          btn_comp= {<PropertyPopup miles={10}  data={flat} />} //This is the popup component that shows the "SHOW MORE" button
+                        /> 
                 )
               )
             }                        
