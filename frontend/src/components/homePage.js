@@ -15,7 +15,7 @@ function HomePage() {
 
 
 function Search({ details }) {
-    
+    const location = useLocation();
     const [searchField, setSearchField] = useState("");
     const [searchShow, setSearchShow] = useState(false);
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function Search({ details }) {
         console.log('Search query: ', e.target.value);
         //navigate("/search")
         navigate("/search", {
-          state: {
+          state: {loginInfo:location.state.loginInfo,
               query: e.target.value, //pass search query into state.query prop
           },
       });
