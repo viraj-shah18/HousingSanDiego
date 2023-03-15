@@ -131,6 +131,7 @@ export default class CollectionCards extends Component {
                           img={flat.img_id ? require("../imgs/"+flat.img_id): require("../imgs/house1.jpg") }
                           key={index}
                           id={flat._id}
+                          showFav={false}
                           btn_comp= {<PropertyPopup miles={10}  data={flat} />} //This is the popup component that shows the "SHOW MORE" button
                         /> 
                 )

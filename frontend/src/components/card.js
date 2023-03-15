@@ -1,4 +1,6 @@
 import IconButton from '@mui/material/IconButton';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import {
     MDBCard,
     MDBCardBody,
@@ -15,63 +17,100 @@ import axios from 'axios';
 
 
 
-function getCollectionfromUser({username, password}){
+function getCollectionfromUser(auth){
   return "6402db2b31f63b058ad8832e"
 }
 
-function addPropertyToCollection(propertyID, collectionID, username, password){
-  let auth = {
-    'username': username,
-    'password': password
-  }
+async function CheckPropertyinCollection(auth, collectionID){
+  const _url = 'http://127.0.0.1:8000/api/collection/id/' + collectionID;
+  console.log({_url});
+  let data = await axios.get(_url, {auth: auth})
+  return data
+}
+
+
+function removePropertyFromCollection(propertyID, collectionID, auth, setaddedState){
   let data;
-  const _url = 'http://127.0.0.1:8000/api/collection/add/' + collectionID + '/' + propertyID;
+  const _url = 'http://127.0.0.1:8000/api/collection/remove/' + collectionID + '/' + propertyID;
   console.log({_url})
   axios.put(_url, {auth: auth}).then(res => {
-        console.log({res})
         data = res.data;
-        console.log({data})
+        setaddedState(false);
   })
   .catch(err => {})
 }
 
+function addPropertyToCollection(propertyID, collectionID, auth, setaddedState){
+  let data;
+  const _url = 'http://127.0.0.1:8000/api/collection/add/' + collectionID + '/' + propertyID;
+  console.log({_url})
+  axios.put(_url, {auth: auth}).then(res => {
+        data = res.data;
+        setaddedState(true);
+  })
+  .catch(err => {})
+}
 
-export function AddtoCollections({propertyID}){
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [added, setaddedState] = useState(false);
-  
-  const handleClick = event => {
-    if (location.state.loginInfo == undefined){
-      navigate('/login');
-    }
-    else{
-      let username = location.state.loginInfo.username;
-      let password = location.state.loginInfo.password;
-
-      // get the collection id from userID
-      let collectionID = getCollectionfromUser(username, password);
-      console.log({propertyID, collectionID});
-      
-      // put a property id into collection id - api/collection/add/str:collection_id/str:property_id
-      // <addPropertyToCollection propertyID={propertyID} collectionID = {collectionID} username={username} password={password}/>
-      addPropertyToCollection(propertyID=propertyID, collectionID=collectionID, username=username, password=password)
-
-      // change style of button
-      // sx = {color}
-    }
-  }
-
-  return <>
-  <IconButton onClick={handleClick}>
-    <CollectionsBookmarkIcon />
-  </IconButton>
-  <Button></Button>
-  </>
+function navigateToLogin(navigate){
+  navigate('/login');
 }
 
 
-export default function CardItem({title, short_desc, btn_comp, btn_txt, img , propertyID=0, details=""}) {
+export function AddtoCollections({propertyID}){
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [added, setaddedState] = useState(false);
+  if (location.state.loginInfo == undefined){
+    return <>
+    <IconButton onClick={() => navigateToLogin(navigate)}>
+      <FavoriteBorderIcon />
+    </IconButton>
+    <Button></Button>
+    </>
+  }
+  
+  let auth = {
+    'username': location.state.loginInfo.username,
+    'password': location.state.loginInfo.password
+  }
+  let collectionID = getCollectionfromUser(auth);
+  
+  let properties;
+  let propertiesInCollection = CheckPropertyinCollection(auth, collectionID);
+  propertiesInCollection.then(res => {
+    properties = res.data.properties;
+    console.log({properties})
+    for (let i=0; i < properties.length; i++){
+      if (properties[i]._id == propertyID){
+        setaddedState(true);
+        console.log("true")
+        break;
+      }
+    }
+  }).catch(err => {console.log(err)});
+
+
+  if (added){
+    return <>
+    <IconButton onClick={() => removePropertyFromCollection(propertyID, collectionID, auth, setaddedState)}>
+      <FavoriteIcon />
+    </IconButton>
+    <Button></Button>
+    </>
+  }
+  else{
+    return <>
+    <IconButton onClick={() => addPropertyToCollection(propertyID, collectionID, auth, setaddedState)}>
+      <FavoriteBorderIcon />
+    </IconButton>
+    <Button></Button>
+    </>
+  }
+  
+}
+
+
+export default function CardItem({title, short_desc, btn_comp, btn_txt, img , propertyID=0, details="", showFav=true}) {
     // Single card component, img is imported as 'import house2 from "../imgs/nuevo-east.jpg";'     
 
     console.log({title, short_desc, btn_comp, btn_txt, img , propertyID, details});
@@ -90,7 +129,7 @@ export default function CardItem({title, short_desc, btn_comp, btn_txt, img , pr
             
           <MDBBtn href='#'>{btn_comp ? null : btn_txt}</MDBBtn>
           {btn_comp ? btn_comp : null}
-          <AddtoCollections propertyID={propertyID}/>
+          {showFav ? <AddtoCollections propertyID={propertyID}/>: <></>}
         </MDBCardBody>
       </MDBCard>    
       
