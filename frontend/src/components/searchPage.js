@@ -52,7 +52,6 @@ function SearchPage() {
             <BathroomSelect bathroom={bathroomBound} handleChange={(e)=>handleChangeBathroom(e)}/>
             <SetCostBounds handleSetLB={(e)=>handleChangeCostLB(e)} handleSetUB={(e)=>handleChangeCostUB(e)}/>
           </Box>
-          {/* <Cards search_query={location.state.query}/> */}
           <Cards search_query={query} filterData = {{bedroom:bedroomBound,bathroom:bathroomBound,costLB:costLowerBound,costUB:costUpperBound}}/>
          </div>
          

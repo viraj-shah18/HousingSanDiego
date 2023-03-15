@@ -62,7 +62,8 @@ geolocator = Nominatim(user_agent="HousingApp", timeout=3)
 @api_view(['GET'])
 def property_search(request, search_query):
     # find closest properties (in sorted order) by search_query str
-
+    permission_classes = [AllowAny]
+    
     if request.method == 'GET': # TESTED
         property_objs = Property.objects.all()
         property_serializer = PropertySerializer(property_objs, many=True)  
