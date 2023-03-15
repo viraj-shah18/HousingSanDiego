@@ -156,7 +156,14 @@ export default class Cards extends Component {
 
     // if query has changed     
     //if ((nextProps.search_query.query !== this.props.search_query.query) || (JSON.stringify(nextProps.filterData)!== JSON.stringify(this.props.filterData))) { // new
-    if ((nextProps.search_query.query !== this.props.search_query.query) ) { // new
+    // if ((nextProps.search_query.query !== this.props.search_query.query) ) { // new
+    if (
+      (nextProps.search_query.query !== this.props.search_query.query) ||
+      (nextProps.filterData.bedroom !== this.props.filterData.bedroom) ||
+      (nextProps.filterData.bathroom !== this.props.filterData.bathroom) ||
+      (nextProps.filterData.costLB !== this.props.filterData.costLB) ||
+      (nextProps.filterData.costUB !== this.props.filterData.costUB) 
+      ) { // new
       // if (nextProps.search_query !== this.props.search_query) {
     // if (nextState.componentDidMount_run || nextProps.search_query !== this.props.search_query) {  
       this.setState({componentDidMount_run: false});
