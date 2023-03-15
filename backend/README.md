@@ -185,6 +185,40 @@ The list is sorted by the "miles" field in ascending order.
 
 Make sure to see the note under the top-level Endpoints section about lists in this API.
 
+## Endpoints for Collection collection
+
+### url = '/api/collection' [GET all Collections, POST one collection]
+
+#### Example GET request 
+```
+url = '/api/collection'
+response = client.get(url)
+```
+
+#### Example POST request - cannot be used to post properties data
+```
+url = '/api/collection'
+data = {
+	"name": "1 Bedroom homes near Ralphs",
+	"desc": "1 bedroom homes near ralphs for 12000 a year",
+}
+response = client.post(url, data=data, content_type='application/json')
+```
+
+### url = '/api/collection/id/<str:id>' [GET a collection by id, DELETE a collection by id]
+
+### url = 'api/collection/add/<str:collection_id>/<str:property_id>' [PUT (add) single property into a collection]
+```
+url = '/api/collection/add/6410625704af2ee86e2054f4/64082270617ed7ce58fb89d6'
+response = client.put(url)
+```
+
+### url = 'api/collection/remove/<str:collection_id>/<str:property_id>' [PUT (remove) single property from a collection]
+```
+url = '/api/collection/remove/6410625704af2ee86e2054f4/64082270617ed7ce58fb89d6'
+response = client.put(url)
+```
+	
 # Testing the Endpoints with Python
 
 To test any new endpoints/views you write through the Python shell:
