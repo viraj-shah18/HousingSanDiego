@@ -10,12 +10,6 @@ class PropertySerializer(serializers.ModelSerializer):
         model = Property
         fields = '__all__'
 
-class CollectionListSerializer(serializers.ModelSerializer):
-    collections = CollectionSerializer(read_only=True, many=True)
-    class Meta:
-        model = CollectionList
-        fields = ('user', 'collections',)
-
 class CollectionSerializer(serializers.ModelSerializer):
     """
     A serializer for our a single Collection object (a list of properties)
@@ -25,6 +19,14 @@ class CollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection
         fields = ('_id', 'name', 'desc', 'properties',)
+
+class CollectionListSerializer(serializers.ModelSerializer):
+    collections = CollectionSerializer(read_only=True, many=True)
+    class Meta:
+        model = CollectionList
+        fields = ('user', 'collections',)
+
+
 
 
 
