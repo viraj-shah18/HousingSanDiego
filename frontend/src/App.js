@@ -59,7 +59,7 @@ function App(props) {
     setAnchorElNav(null);
     if(gotoPage.name!="About")
     {
-      navigate(gotoPage.path);
+      navigate(gotoPage.path,{state:location.state});
     }
   };
   const handleOpenNavMenu = (event) => {
@@ -67,7 +67,7 @@ function App(props) {
   };
   const handleOpenUserMenu = (event) => {
     console.log("openusermenu");
-    if(!location.state){
+    if((!location.state) ||(!location.state.loginInfo) ){
       navigate("/login");
     }else{
       setAnchorElUser(event.currentTarget);
@@ -87,7 +87,7 @@ function App(props) {
     setAnchorElUser(null);
     console.log(option)
     console.log("need login before visit profile",location)
-    if(!location.state){
+    if((!location.state) ||(!location.state.loginInfo) ){
       navigate("/login");
     }
     else if(option == 'Profile'){
