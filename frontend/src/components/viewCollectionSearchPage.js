@@ -46,17 +46,6 @@ export default function CollectionsSearchPage() {
       console.log('the parameter has changed', bedroomBound,bathroomBound,costLowerBound,costUpperBound)
    }, [bedroomBound,bathroomBound,costLowerBound,costUpperBound])
     return (
-        <div className="searchbar-searchpage" >
-          {/* <SearchBar keyPress={(e) => e.keyCode == 13 ? setQuery({ query: e.target.value}) : null} default_text={location.state.query}/> */}
-          <SearchBar keyPress={(e) => keyPress(e,setQuery)} default_text={location.state.query}/>
-          <Box sx={{ms:'auto',display: 'flex'}}>
-            <BedroomSelect bedroom={bedroomBound} handleChange={(e)=>handleChangeBedroom(e)}/>
-            <BathroomSelect bathroom={bathroomBound} handleChange={(e)=>handleChangeBathroom(e)}/>
-            <SetCostBounds handleSetLB={(e)=>handleChangeCostLB(e)} handleSetUB={(e)=>handleChangeCostUB(e)}/>
-          </Box>
-          <CollectionCards search_query={query} username={location.state.loginInfo.username} password={location.state.loginInfo.password} filterData = {{bedroom:bedroomBound,bathroom:bathroomBound,costLB:costLowerBound,costUB:costUpperBound}}/>
-         </div>
-         
-
+          <CollectionCards search_query={query} username={location.state.loginInfo.username} password={location.state.loginInfo.password} filterData = {{bedroom:bedroomBound,bathroom:bathroomBound,costLB:costLowerBound,costUB:costUpperBound}}/>         
     );
 }
