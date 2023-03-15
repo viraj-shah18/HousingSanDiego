@@ -15,10 +15,10 @@ function IsCardFilter(flat,filterData){
   let flatcost = Number(temp)
   let result = true;
   
-  if(flatbath!=filterData.bathroom)result = false
+  if(flatbath!=filterData.bathroom && filterData.bathroom!=0)return false
   if(filterData.bathroom == 0) result = true
   console.log(result)
-  if(flatbed!=filterData.bedroom)result = false
+  if(flatbed!=filterData.bedroom && filterData.bedroom!=0)return false
   if(filterData.bedroom == 0) result = true
   console.log(result)
   if(!((flatcost>=filterData.costLB) && (flatcost<=filterData.costUB)))result = false
@@ -153,10 +153,17 @@ export default class Cards extends Component {
       this.setState({componentDidMount_run: false});
       return true
     }
-
+    console.log("nextProps: " + nextProps)
+    console.log("this.props: " + this.props)
     // if query has changed     
     //if ((nextProps.search_query.query !== this.props.search_query.query) || (JSON.stringify(nextProps.filterData)!== JSON.stringify(this.props.filterData))) { // new
-    if ((nextProps.search_query.query !== this.props.search_query.query) ) { // new
+    if (
+      (nextProps.search_query.query !== this.props.search_query.query) ||
+      (nextProps.filterData.bedroom !== this.props.filterData.bedroom) ||
+      (nextProps.filterData.bathroom !== this.props.filterData.bathroom) ||
+      (nextProps.filterData.costLB !== this.props.filterData.costLB) ||
+      (nextProps.filterData.costUB !== this.props.filterData.costUB) 
+      ) { // new
       // if (nextProps.search_query !== this.props.search_query) {
     // if (nextState.componentDidMount_run || nextProps.search_query !== this.props.search_query) {  
       this.setState({componentDidMount_run: false});
@@ -198,7 +205,7 @@ export default class Cards extends Component {
           bedroom: this.props.filterData.bedroom,
           bathroom: this.props.filterData.bathroom,
           costLB: this.props.filterData.costLB,
-          costUB: this.props.filterData.costUB,
+          costUB: this.props.filterData.costUB
         });
       })
       .catch( (error) => {
@@ -244,7 +251,7 @@ export default class Cards extends Component {
                                   }
                           btn_txt={"Show"} 
                           img={flat.property.img_id ? require("../imgs/"+flat.property.img_id): require("../imgs/house1.jpg") }
-
+                          key={index}
                           btn_comp= {<PropertyPopup miles={flat.miles} data={flat.property} />} //This is the popup component that shows the "SHOW MORE" button
                         
                         /> :
@@ -264,4 +271,5 @@ export default class Cards extends Component {
         );
  }
 }
+
 

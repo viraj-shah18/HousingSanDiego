@@ -11,10 +11,10 @@ export function BedroomSelect({bedroom,handleChange}) {
     return (
       <Box sx={{ minWidth: 120 ,m:1}}>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">bedroom</InputLabel>
+          <InputLabel id="bedroom-select-label">bedroom</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="bedroom-select-label"
+            id="bedroom-select"
             value={bedroom}
             label="bedroomSelect"
             onChange={(e)=>handleChange(e)}
@@ -35,10 +35,10 @@ export function BathroomSelect({bathroom,handleChange}) {
     return (
       <Box sx={{ minWidth: 120 ,m:1}}>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">bathroom</InputLabel>
+          <InputLabel id="bathroom-select-label">bathroom</InputLabel>
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="bathroom-select-label"
+            id="bathroom-select"
             value={bathroom}
             label="bathroomSelect"
             onChange={(e)=>handleChange(e)}
@@ -65,8 +65,8 @@ export function SetCostBounds({handleSetLB,handleSetUB}) {
         noValidate
         autoComplete="off"
       >
-        <TextField id="outlined-basic" label="Cost Lowerbound" variant="outlined" onChange={(event) => handleSetLB(event)}/>
-        <TextField id="outlined-basic" label="Cost Upperbound" variant="outlined" onChange={(event) => handleSetUB(event)}/>
+        <TextField id="costLB" label="Cost Lowerbound" variant="outlined" onChange={(event) => handleSetLB(event)}/>
+        <TextField id="costUB" label="Cost Upperbound" variant="outlined" onChange={(event) => handleSetUB(event)}/>
       </Box>
     );
   }
