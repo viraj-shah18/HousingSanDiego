@@ -46,7 +46,7 @@ const clickable = {
 };
 
 
-function CollectionListComponent({id, img, name, num_places, collectionsList, setcollectionList}) {
+function CollectionListComponent({id, img, name, num_places}) {
     const navigate = useNavigate();
 
     const handleCollectionsClick = event => {
@@ -57,12 +57,9 @@ function CollectionListComponent({id, img, name, num_places, collectionsList, se
         })
     }
 
-    function handleRemoveCollectionsClick({remove_name}){
-        console.log("Here pls")
-        console.log(remove_name)
-        let filteredArray = collectionsList.filter(item => item['name'] !== remove_name)
-        setcollectionList(filteredArray);
-    }
+    const handleAddtoCollectionsClick = event => {
+      
+    } 
 
     return (
         <Grid container spacing={2}>
@@ -74,7 +71,7 @@ function CollectionListComponent({id, img, name, num_places, collectionsList, se
             <Typography align='left' margin='0rem 0px 0px 1rem' fontSize={'12px'}> { num_places } places</Typography>
         </Grid>
         <Grid item xs={2}>
-            <RemoveItem remove_name={name} onClick={handleRemoveCollectionsClick} sx={clickable}>Remove</RemoveItem>
+            <AddItem remove_name={name} onClick={handleAddtoCollectionsClick} sx={clickable}>Add</AddItem>
         </Grid>
         </Grid>
     )
@@ -97,7 +94,7 @@ function AddCollectionInput({collectionsList, setcollectionList}) {
       setTextInput('');
       setcollectionList([
         ...collectionsList,
-        {id: 0, name: textInput, num_places: 0, images: require("../home.png")}
+        {id: 0, name: textInput, num_places: 1, images: require("../home.png")}
       ]);
     }
     
@@ -106,7 +103,7 @@ function AddCollectionInput({collectionsList, setcollectionList}) {
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <Typography paddingTop={'0.4em'} fontSize={'16px'} fontWeight={'bold'}>
-              Create new collection: 
+              Create and add to a new collection: 
             </Typography>
           </Grid>
           <Grid item xs={7}>
@@ -150,7 +147,7 @@ export default function Collection () {
     return (
       <Box sx={style}>
         <Typography id='modal-modal-title' variant='h5' component='h2' align='center'>
-        My Collections
+        Add to
         </Typography>
         <Divider variant="middle" sx={{ p:1}}/> 
         <Box sx={{ flexGrow: 1, maxHeight: 300, overflow: 'auto' }}>
