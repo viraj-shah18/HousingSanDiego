@@ -1,6 +1,5 @@
 import * as React from 'react';
 import HomePage from './components/homePage';
-import CollectionPage from './components/collectionList';
 import ProfilePage from './components/profilePage';
 import SearchPage from './components/searchPage';
 import PropertyPopup from './components/propertyPopup'
@@ -28,7 +27,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import CollectionPopup from './components/CollectionsPopup';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import CollectionsSearchPage from './components/viewCollectionSearchPage';
 
 
 const pages = [{
@@ -99,6 +99,10 @@ function App(props) {
     }
 
   };
+
+  const handleViewCollection = event => {
+    navigate("/collections", {state:location.state})
+  }
 
   return (
     
@@ -196,7 +200,8 @@ function App(props) {
             {/* <IconButton aria-label="Friends">
               <PeopleIcon />
             </IconButton> */}
-            {location.state ? <CollectionPopup/> : <></>}
+            {location.state ? <><IconButton onClick={handleViewCollection}><CollectionsBookmarkIcon/></IconButton>
+            <Button onClick={handleViewCollection}></Button></> : <></>}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -230,7 +235,7 @@ function App(props) {
     </AppBar>
     <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/collections" element={<CollectionPage />} />
+          <Route path="/collections" element={<CollectionsSearchPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
