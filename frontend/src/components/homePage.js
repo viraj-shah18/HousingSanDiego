@@ -42,7 +42,7 @@ function Search({ details }) {
     }
 
     return (
-      <div className="main" style={{ backgroundImage: `url(${background})` }}>
+      <div className="main" style={{ backgroundImage: `url(${background})` , backgroundSize: 'cover', }}>
       <h1>Abode Genius</h1>
       <SearchBar keyPress={keyPress}/>
     </div>

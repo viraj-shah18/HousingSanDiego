@@ -236,7 +236,7 @@ const itemData = [
                             />:
                             <Avatar
                                 alt="My Picture"
-                                src={require('../profile.png') }
+                                src={require('../profile_victor.jpg') }
                                 sx={{ width: 200, height: 200, mx:'auto' }}
                             />
                             }
