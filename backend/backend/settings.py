@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from .keys.key import client_secret, client_id
+from .keys import secured_info
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-%fz9fft^f8+$m+2g4w&aag2ky0%x-&2jiugjmoht^0g0*jw+5$"
+SECRET_KEY = secured_info.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -93,10 +94,10 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'abode_db',
-        'HOST': 'mongodb+srv://abodegenius:sHnSgURodYwUws3U@cluster0.pjbn6j9.mongodb.net/?retryWrites=true&w=majority',
+        'NAME': ,
+        'HOST': mongoDB_info.mongo_host,
         'USER': 'abodegenius',
-        'PASSWORD': 'sHnSgURodYwUws3U',
+        'PASSWORD': mongoDB_info.mongo_password,
     },
 }
 
